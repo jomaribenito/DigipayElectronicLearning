@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="12dp"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".ui.QuestionnaireActivity">
+
+    <TextView
+        android:id="@+id/thanks_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/thanks_message"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        android:textStyle="italic"
+        android:visibility="gone" />
+
+
+    <LinearLayout
+        android:id="@+id/questionnaire_container_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextSwitcher
+            android:id="@+id/question_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp" />
+
+        <RadioGroup
+            android:id="@+id/answer_rg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/option1_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Answer" />
+
+            <RadioButton
+                android:id="@+id/option2_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Answer" />
+
+            <RadioButton
+                android:id="@+id/option3_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Answer" />
+
+        </RadioGroup>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/next_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/next"
+        android:theme="@style/ButtonTheme" />
+
+    <Button
+        android:id="@+id/done_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/see_accuracy"
+        android:theme="@style/ButtonTheme"
+        android:visibility="gone" />
+
+
+</LinearLayout>
