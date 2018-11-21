@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "457585414382",
+    "firebase_url": "https://digipay-elearning.firebaseio.com",
+    "project_id": "digipay-elearning",
+    "storage_bucket": "digipay-elearning.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:457585414382:android:cce7b499ceecaeef",
+        "android_client_info": {
+          "package_name": "ph.digipay.digipayelectroniclearning"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "457585414382-2d59foh4okuecmd1kk29m66c1ue0ukrc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeE5xDTpB7omzgRI6bqK3rUmJuRA2l-y0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
