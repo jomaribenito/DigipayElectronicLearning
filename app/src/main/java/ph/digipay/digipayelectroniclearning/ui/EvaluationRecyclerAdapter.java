@@ -18,20 +18,20 @@ import java.util.Map;
 
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
+import ph.digipay.digipayelectroniclearning.models.Questionnaire;
 
 public class EvaluationRecyclerAdapter extends RecyclerView.Adapter<EvaluationRecyclerAdapter.EvaluationRecyclerAdapterVH> {
 
-    private List<String> questionsList;
-    private Map<Integer, List<String>> optionsMap;
     private Activity activity;
-    private ArrayList<Integer> correctAnsIndexList;
     private ArrayList<Integer> answerList;
 
-    public EvaluationRecyclerAdapter(Activity activity, List<String> questionsList, Map<Integer, List<String>> optionsMap) {
+    private List<Questionnaire> questionnaireList;
+
+    public EvaluationRecyclerAdapter(Activity activity, List<Questionnaire> questionnaireList) {
         this.activity = activity;
-        this.questionsList = questionsList;
-        this.optionsMap = optionsMap;
+        this.questionnaireList = questionnaireList;
     }
+
 
     @NonNull
     @Override
@@ -42,49 +42,38 @@ public class EvaluationRecyclerAdapter extends RecyclerView.Adapter<EvaluationRe
 
     @Override
     public void onBindViewHolder(@NonNull EvaluationRecyclerAdapterVH holder, int i) {
-        String question = questionsList.get(i);
-        List<String> optionsList = optionsMap.get(i + 1);
+        Questionnaire questionnaire = questionnaireList.get(i);
 
-        holder.questionTv.setText(question);
-        holder.option1Rb.setText(optionsList.get(0));
-        holder.option2Rb.setText(optionsList.get(1));
+        holder.questionTv.setText(questionnaire.getQuestion());
+        holder.option1Rb.setText(questionnaire.getOptions().getOption1());
+        holder.option2Rb.setText(questionnaire.getOptions().getOption2());
+        holder.option3Rb.setText(questionnaire.getOptions().getOption3());
+//        ((RadioButton) holder.answerRg.getChildAt(Integer.parseInt(questionnaire.getAnswer_index()))).setChecked(true);
 
-        if (optionsList.size() == 2) {
-            holder.option3Rb.setVisibility(View.GONE);
-        } else {
-            holder.option3Rb.setVisibility(View.VISIBLE);
-            holder.option3Rb.setText(optionsList.get(2));
-        }
 
         Bundle bundle = activity.getIntent().getExtras();
         if (bundle != null) {
-            correctAnsIndexList = bundle.getIntegerArrayList(StringConstants.CORRECT_ANSWERS);
             answerList = bundle.getIntegerArrayList(StringConstants.ANSWER_LIST);
         }
 
         if (answerList != null) {
-            ((RadioButton) holder.answerRg.getChildAt(answerList.get(i))).setChecked(true);
-        }
-
-
-        if (correctAnsIndexList != null) {
-            for (int ans : correctAnsIndexList) {
-                if (ans == i) {
-                    holder.questionnaireLL.setBackground(activity.getDrawable(R.drawable.border_green));
-                    holder.questionTv.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_check_circle_green_24dp, 0);
-                    break;
-                } else {
-                    holder.questionnaireLL.setBackground(activity.getDrawable(R.drawable.border_red));
-                    holder.questionTv.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_cancel_red_24dp, 0);
-                }
+            if (answerList.get(i) != -1) {
+                ((RadioButton) holder.answerRg.getChildAt(answerList.get(i))).setChecked(true);
             }
-
+            if (answerList.get(i) == Integer.parseInt(questionnaire.getAnswer_index())) {
+                holder.questionnaireLL.setBackground(activity.getDrawable(R.drawable.border_green));
+                holder.questionTv.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_check_circle_green_24dp, 0);
+            } else {
+                holder.questionnaireLL.setBackground(activity.getDrawable(R.drawable.border_red));
+                holder.questionTv.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_cancel_red_24dp, 0);
+            }
         }
+
     }
 
     @Override
     public int getItemCount() {
-        return questionsList.size();
+        return questionnaireList.size();
     }
 
     class EvaluationRecyclerAdapterVH extends RecyclerView.ViewHolder {

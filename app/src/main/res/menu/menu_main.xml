@@ -7,4 +7,9 @@
         android:title="Logout"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_manage"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="Manage Questionnaire"
+        app:showAsAction="collapseActionView" />
 </menu>

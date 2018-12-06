@@ -16,9 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MainActivity">
-
-        </activity>
+        <activity android:name=".ui.MainActivity" />
         <activity android:name=".ui.QuestionnaireActivity" />
         <activity android:name=".ui.EvaluationActivity" />
         <activity android:name=".ui.TutorialVideoActivity" />
@@ -35,6 +33,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.QuestionnaireFormActivity" />
+        <activity
+            android:name=".ui.QuestionnaireManagementActivity"
+            android:label="@string/title_activity_questionnaire_management"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

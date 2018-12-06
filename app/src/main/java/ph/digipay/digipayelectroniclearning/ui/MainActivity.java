@@ -60,6 +60,9 @@ public class MainActivity extends BaseActivity {
             finish();
             startActivity(new Intent(getApplicationContext(), LandingPageActivity.class));
             return true;
+        } else if (id == R.id.action_manage) {
+            startActivity(new Intent(getApplicationContext(), QuestionnaireManagementActivity.class));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

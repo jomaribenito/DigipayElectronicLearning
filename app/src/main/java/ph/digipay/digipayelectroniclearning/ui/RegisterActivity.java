@@ -2,14 +2,19 @@ package ph.digipay.digipayelectroniclearning.ui;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.util.Log;
 import android.view.View;
 
+import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -90,6 +95,7 @@ public class RegisterActivity extends BaseActivity implements Validator.Validati
                     showToast("Email already exists.");
                 } else {
                     String userId = userDataReference.push().getKey();
+                    incrementCounter(userDataReference);
                     User user = new User(userId);
                     user.setUsername(email);
                     user.setPassword(password);
@@ -128,5 +134,30 @@ public class RegisterActivity extends BaseActivity implements Validator.Validati
             public void onCancelled(final DatabaseError databaseError) {
             }
         });*/
+    }
+
+    public void incrementCounter(DatabaseReference databaseReference) {
+        databaseReference.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(final MutableData currentData) {
+                if (currentData.getValue() == null) {
+                    currentData.setValue(1);
+                } else {
+                    currentData.setValue((Long) currentData.getValue() + 1);
+                }
+
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                if (databaseError != null) {
+                    Log.d("TAG","Firebase counter increment failed.");
+                } else {
+                    Log.d("TAG","Firebase counter increment succeeded.");
+                }
+            }
+
+        });
     }
 }

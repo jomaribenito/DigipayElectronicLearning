@@ -13,6 +13,14 @@ public class User {
         this.userID = userID;
     }
 
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
     public String getUsername() {
         return username;
     }
