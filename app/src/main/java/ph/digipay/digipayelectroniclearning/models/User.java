@@ -1,24 +1,12 @@
 package ph.digipay.digipayelectroniclearning.models;
 
-public class User {
+public class User extends DatabaseObject {
 
-    private String userID;
     private String username;
     private String password;
+    private String userType;
 
     public User() {
-    }
-
-    public User(String userID) {
-        this.userID = userID;
-    }
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
     }
 
     public String getUsername() {
@@ -35,5 +23,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 }

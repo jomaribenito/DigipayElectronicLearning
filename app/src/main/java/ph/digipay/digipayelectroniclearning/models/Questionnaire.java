@@ -3,26 +3,24 @@ package ph.digipay.digipayelectroniclearning.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
+import com.google.firebase.database.IgnoreExtraProperties;
 
-public class Questionnaire implements Parcelable {
-    private String id;
+@IgnoreExtraProperties
+public class Questionnaire extends DatabaseObject implements Parcelable {
     private String question;
     private Options options;
-    private String answer_index;
+    private String answerIndex;
+    private String moduleUid;
 
     public Questionnaire() {
     }
 
-    public Questionnaire(String id) {
-        this.id = id;
-    }
 
-    protected Questionnaire(Parcel in) {
-        id = in.readString();
+    private Questionnaire(Parcel in) {
+        moduleUid = in.readString();
         question = in.readString();
         options = (Options) in.readSerializable();
-        answer_index = in.readString();
+        answerIndex = in.readString();
     }
 
     public static final Creator<Questionnaire> CREATOR = new Creator<Questionnaire>() {
@@ -37,12 +35,12 @@ public class Questionnaire implements Parcelable {
         }
     };
 
-    public String getId() {
-        return id;
+    public String getModuleUid() {
+        return moduleUid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setModuleUid(String moduleUid) {
+        this.moduleUid = moduleUid;
     }
 
     public String getQuestion() {
@@ -61,12 +59,12 @@ public class Questionnaire implements Parcelable {
         this.options = options;
     }
 
-    public String getAnswer_index() {
-        return answer_index;
+    public String getAnswerIndex() {
+        return answerIndex;
     }
 
-    public void setAnswer_index(String answer_index) {
-        this.answer_index = answer_index;
+    public void setAnswerIndex(String answerIndex) {
+        this.answerIndex = answerIndex;
     }
 
     @Override
@@ -76,9 +74,9 @@ public class Questionnaire implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeString(moduleUid);
         dest.writeString(question);
         dest.writeSerializable(options);
-        dest.writeString(answer_index);
+        dest.writeString(answerIndex);
     }
 }
