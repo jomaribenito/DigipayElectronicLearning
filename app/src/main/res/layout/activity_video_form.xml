@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.admin.video.VideoFormActivity">
+
+    <include layout="@layout/toolbar"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Module"/>
+
+    <Spinner
+        android:id="@+id/module_spnr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/video_url_tiet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Video Url"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/video_name_tiet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Video Name"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/video_description_tiet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Video Description"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/add_video_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add new Video FILE"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/modules_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

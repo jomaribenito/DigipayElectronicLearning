@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.QuestionnaireFormActivity">
+    tools:context=".ui.admin.questionnaire.QuestionnaireFormActivity">
 
     <include layout="@layout/toolbar" />
 
@@ -13,6 +13,16 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/activity_vertical_margin"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Module"/>
+
+        <Spinner
+            android:id="@+id/module_spnr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
