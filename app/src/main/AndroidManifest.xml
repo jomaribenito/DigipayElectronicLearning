@@ -33,11 +33,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.QuestionnaireFormActivity" />
+        <activity android:name=".ui.admin.questionnaire.QuestionnaireFormActivity" />
         <activity
-            android:name=".ui.QuestionnaireManagementActivity"
+            android:name=".ui.admin.questionnaire.QuestionnaireManagementActivity"
             android:label="@string/title_activity_questionnaire_management"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ui.PDFBrowserActivity" />
+        <activity android:name=".ui.admin.module.ModuleActivity" />
+        <activity
+            android:name=".ui.admin.AdminMainActivity"
+            android:label="@string/title_activity_admin_main"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".ui.admin.pdf.PDFManagementActivity" />
+        <activity android:name=".ui.admin.pdf.PDFFormActivity" />
+        <activity android:name=".ui.admin.video.VideoManagementActivity" />
+        <activity android:name=".ui.admin.video.VideoFormActivity"></activity>
     </application>
 
 </manifest>

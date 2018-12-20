@@ -8,6 +8,7 @@ import android.view.View;
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
 import ph.digipay.digipayelectroniclearning.common.constants.SharedPrefManager;
+import ph.digipay.digipayelectroniclearning.ui.admin.AdminMainActivity;
 
 public class LandingPageActivity extends BaseActivity {
 
@@ -21,22 +22,12 @@ public class LandingPageActivity extends BaseActivity {
         sharedPrefManager = new SharedPrefManager(this);
 
         if (sharedPrefManager.isLogin()){
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(getApplicationContext(), AdminMainActivity.class));
             finish();
         }
 
-        findViewById(R.id.sign_in_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            }
-        });
+        findViewById(R.id.sign_in_btn).setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), LoginActivity.class)));
 
-        findViewById(R.id.register_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
-            }
-        });
+        findViewById(R.id.register_btn).setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), RegisterActivity.class)));
     }
 }

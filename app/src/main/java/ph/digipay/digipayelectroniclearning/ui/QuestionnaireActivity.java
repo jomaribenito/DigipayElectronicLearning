@@ -17,7 +17,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -79,14 +78,11 @@ public class QuestionnaireActivity extends BaseActivity {
         doneBtn = findViewById(R.id.done_btn);
         questionnaireContainer = findViewById(R.id.questionnaire_container_ll);
 
-        questionTv.setFactory(new ViewSwitcher.ViewFactory() {
-            @Override
-            public View makeView() {
-                TextView textView = new TextView(getApplicationContext());
-                textView.setTextColor(Color.BLACK);
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-                return textView;
-            }
+        questionTv.setFactory(() -> {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setTextColor(Color.BLACK);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            return textView;
         });
 
         Animation textAnimationIn = AnimationUtils.
@@ -100,15 +96,12 @@ public class QuestionnaireActivity extends BaseActivity {
         questionTv.setInAnimation(textAnimationIn);
         questionTv.setOutAnimation(textAnimationOut);
 
-        timerTv.setFactory(new ViewSwitcher.ViewFactory() {
-            @Override
-            public View makeView() {
-                TextView textView = new TextView(getApplicationContext());
-                textView.setTextColor(Color.BLACK);
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
-                textView.setGravity(Gravity.END);
-                return textView;
-            }
+        timerTv.setFactory(() -> {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setTextColor(Color.BLACK);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
+            textView.setGravity(Gravity.END);
+            return textView;
         });
 
         Animation textAnimationIn2 = AnimationUtils.
@@ -149,52 +142,46 @@ public class QuestionnaireActivity extends BaseActivity {
 
 
         answerList = new ArrayList<>();
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                countDownTimer.cancel();
-                int radioButtonID = answerRg.getCheckedRadioButtonId();
-                View radioButton = answerRg.findViewById(radioButtonID);
-                int answer = answerRg.indexOfChild(radioButton);
-                answerList.add(answer);
-                answerRg.clearCheck();
-                if (ctr <= questionnaireList.size()) {
-                    if (Integer.parseInt(questionnaireList.get(ctr - 1).getAnswer_index()) == answer) {
-                        //correct
-                        showMessageDialog("You got it right!");
-                        numberOfCorrectAnswer++;
-                    } else {
-                        //incorrect
-                        showMessageDialog("I'm sorry but that is not the right answer.");
-                    }
-                    if (ctr == questionnaireList.size()) {
-                        thanksTv.setVisibility(View.VISIBLE);
-                        questionnaireContainer.setVisibility(View.GONE);
-                        nextBtn.setVisibility(View.GONE);
-                        doneBtn.setVisibility(View.VISIBLE);
-                        countDownTimer.cancel();
-                        timerTv.setVisibility(View.GONE);
-                    } else {
-                        loadData(ctr);
-                        ctr++;
-                        countDownTimer.start();
-                    }
+        nextBtn.setOnClickListener(v -> {
+            countDownTimer.cancel();
+            int radioButtonID = answerRg.getCheckedRadioButtonId();
+            View radioButton = answerRg.findViewById(radioButtonID);
+            int answer = answerRg.indexOfChild(radioButton);
+            answerList.add(answer);
+            answerRg.clearCheck();
+            if (ctr <= questionnaireList.size()) {
+                if (Integer.parseInt(questionnaireList.get(ctr - 1).getAnswerIndex()) == answer) {
+                    //correct
+                    showMessageDialog("You got it right!");
+                    numberOfCorrectAnswer++;
+                } else {
+                    //incorrect
+                    showMessageDialog("I'm sorry but that is not the right answer.");
                 }
-
+                if (ctr == questionnaireList.size()) {
+                    thanksTv.setVisibility(View.VISIBLE);
+                    questionnaireContainer.setVisibility(View.GONE);
+                    nextBtn.setVisibility(View.GONE);
+                    doneBtn.setVisibility(View.VISIBLE);
+                    countDownTimer.cancel();
+                    timerTv.setVisibility(View.GONE);
+                } else {
+                    loadData(ctr);
+                    ctr++;
+                    countDownTimer.start();
+                }
             }
+
         });
 
-        doneBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putIntegerArrayList(StringConstants.ANSWER_LIST, answerList);
-                bundle.putInt(StringConstants.CORRECT_ANSWERS, numberOfCorrectAnswer);
-                Intent intent = new Intent(getApplicationContext(), EvaluationActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-                finish();
-            }
+        doneBtn.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putIntegerArrayList(StringConstants.ANSWER_LIST, answerList);
+            bundle.putInt(StringConstants.CORRECT_ANSWERS, numberOfCorrectAnswer);
+            Intent intent = new Intent(getApplicationContext(), EvaluationActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            finish();
         });
 
 

@@ -7,7 +7,6 @@ import android.support.design.widget.TextInputEditText;
 import android.util.Log;
 import android.view.View;
 
-import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +26,7 @@ import java.util.List;
 import ph.digipay.digipayelectroniclearning.BuildConfig;
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
+import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.models.User;
 
 public class RegisterActivity extends BaseActivity implements Validator.ValidationListener {
@@ -51,7 +51,7 @@ public class RegisterActivity extends BaseActivity implements Validator.Validati
         setContentView(R.layout.activity_register);
 
         mDatabase = FirebaseDatabase.getInstance();
-        userDataReference = mDatabase.getReference("users");
+        userDataReference = mDatabase.getReference(StringConstants.USERS_DB);
 
         validator = new Validator(this);
         validator.setValidationListener(this);
@@ -66,12 +66,9 @@ public class RegisterActivity extends BaseActivity implements Validator.Validati
             confirmPassword.setText("Pass1234!");
         }
 
-        findViewById(R.id.register_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showProgressDialog("Creating account...", false);
-                validator.validate();
-            }
+        findViewById(R.id.register_btn).setOnClickListener(v -> {
+            showProgressDialog("Creating account...", false);
+            validator.validate();
         });
     }
 
@@ -95,10 +92,10 @@ public class RegisterActivity extends BaseActivity implements Validator.Validati
                     showToast("Email already exists.");
                 } else {
                     String userId = userDataReference.push().getKey();
-                    incrementCounter(userDataReference);
-                    User user = new User(userId);
+                    User user = new User();
                     user.setUsername(email);
                     user.setPassword(password);
+                    user.setUserType(StringConstants.TYPE_USER);
                     userDataReference.child(userId).setValue(user);
                     finish();
                 }

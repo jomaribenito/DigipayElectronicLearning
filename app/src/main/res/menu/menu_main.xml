@@ -10,6 +10,6 @@
     <item
         android:id="@+id/action_manage"
         android:icon="@android:drawable/ic_menu_manage"
-        android:title="Manage Questionnaire"
+        android:title="Manage Modules"
         app:showAsAction="collapseActionView" />
 </menu>

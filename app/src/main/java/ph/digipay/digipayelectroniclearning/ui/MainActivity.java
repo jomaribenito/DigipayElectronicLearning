@@ -1,24 +1,34 @@
 package ph.digipay.digipayelectroniclearning.ui;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.MediaController;
-import android.widget.VideoView;
+
+import java.util.List;
 
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
 import ph.digipay.digipayelectroniclearning.common.constants.SharedPrefManager;
+import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
+import ph.digipay.digipayelectroniclearning.common.utils.EndlessRecyclerLinearLayoutManager;
+import ph.digipay.digipayelectroniclearning.models.IconText;
+import ph.digipay.digipayelectroniclearning.models.Module;
+import ph.digipay.digipayelectroniclearning.models.User;
+import ph.digipay.digipayelectroniclearning.ui.admin.module.ModuleActivity;
+import ph.digipay.digipayelectroniclearning.ui.admin.module.ModuleRecyclerAdapter;
+import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
 
 public class MainActivity extends BaseActivity {
 
     private SharedPrefManager sharedPrefManager;
+    private RecyclerView mainMenuRv;
+    private MenuRecyclerAdapter menuRecyclerAdapter;
+    private List<IconText> iconTextList;
+    private FirebaseDatabaseHelper<Module> modulesFirebaseDatabase;
+    private ModuleRecyclerAdapter moduleRecyclerAdapter;
+    private List<Module> modulesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,20 +36,18 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mainMenuRv = findViewById(R.id.main_menu_rv);
+
         sharedPrefManager = new SharedPrefManager(this);
 
-        findViewById(R.id.tuts_video_ll).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), TutorialVideoActivity.class));
-            }
-        });
+        User user = sharedPrefManager.getLoginUser();
 
-        findViewById(R.id.agent_test_ll).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), QuestionnaireActivity.class));
-            }
+        modulesFirebaseDatabase = new FirebaseDatabaseHelper<>(Module.class);
+
+        modulesFirebaseDatabase.fetchItems(StringConstants.MODULE_DB, itemList -> {
+            moduleRecyclerAdapter = new ModuleRecyclerAdapter(modulesList);
+            mainMenuRv.setLayoutManager(new EndlessRecyclerLinearLayoutManager(getApplicationContext()));
+            mainMenuRv.setAdapter(moduleRecyclerAdapter);
         });
 
     }
@@ -61,7 +69,7 @@ public class MainActivity extends BaseActivity {
             startActivity(new Intent(getApplicationContext(), LandingPageActivity.class));
             return true;
         } else if (id == R.id.action_manage) {
-            startActivity(new Intent(getApplicationContext(), QuestionnaireManagementActivity.class));
+            startActivity(new Intent(getApplicationContext(), ModuleActivity.class));
             return true;
         }
 

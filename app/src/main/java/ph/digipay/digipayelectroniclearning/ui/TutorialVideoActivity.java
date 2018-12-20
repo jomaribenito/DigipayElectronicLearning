@@ -41,14 +41,9 @@ public class TutorialVideoActivity extends BaseActivity {
             videoView.setMediaController(mediaController);
             videoView.setVideoURI(video);
             videoView.requestFocus();
-            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener()
-            {
-
-                public void onPrepared(MediaPlayer mp)
-                {
-                    progressDialog.dismiss();
-                    videoView.start();
-                }
+            videoView.setOnPreparedListener(mp -> {
+                progressDialog.dismiss();
+                videoView.start();
             });
 
 

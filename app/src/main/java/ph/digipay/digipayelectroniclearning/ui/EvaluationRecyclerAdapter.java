@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
@@ -48,7 +47,7 @@ public class EvaluationRecyclerAdapter extends RecyclerView.Adapter<EvaluationRe
         holder.option1Rb.setText(questionnaire.getOptions().getOption1());
         holder.option2Rb.setText(questionnaire.getOptions().getOption2());
         holder.option3Rb.setText(questionnaire.getOptions().getOption3());
-//        ((RadioButton) holder.answerRg.getChildAt(Integer.parseInt(questionnaire.getAnswer_index()))).setChecked(true);
+//        ((RadioButton) holder.answerRg.getChildAt(Integer.parseInt(questionnaire.getAnswerIndex()))).setChecked(true);
 
 
         Bundle bundle = activity.getIntent().getExtras();
@@ -60,7 +59,7 @@ public class EvaluationRecyclerAdapter extends RecyclerView.Adapter<EvaluationRe
             if (answerList.get(i) != -1) {
                 ((RadioButton) holder.answerRg.getChildAt(answerList.get(i))).setChecked(true);
             }
-            if (answerList.get(i) == Integer.parseInt(questionnaire.getAnswer_index())) {
+            if (answerList.get(i) == Integer.parseInt(questionnaire.getAnswerIndex())) {
                 holder.questionnaireLL.setBackground(activity.getDrawable(R.drawable.border_green));
                 holder.questionTv.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_check_circle_green_24dp, 0);
             } else {

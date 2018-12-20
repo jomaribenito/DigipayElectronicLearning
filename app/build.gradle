@@ -9,8 +9,22 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        setProperty("archivesBaseName", "digipay_elearning-v" + versionName)
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     buildTypes {
+        debug {
+            versionNameSuffix "-debug"
+            debuggable true
+            ext.alwaysUpdateBuildId = false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -32,8 +46,12 @@ dependencies {
     //Fields Validation
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
     //Firebase
-    implementation 'com.google.firebase:firebase-core:16.0.5'
+    implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.google.firebase:firebase-database:16.0.5'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    // RxJava2 Dependencies
+    api 'io.reactivex.rxjava2:rxjava:2.2.2'
+    api 'io.reactivex.rxjava2:rxandroid:2.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
