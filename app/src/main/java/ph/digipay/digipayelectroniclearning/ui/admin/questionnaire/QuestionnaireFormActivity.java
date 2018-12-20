@@ -1,55 +1,53 @@
-package ph.digipay.digipayelectroniclearning.ui;
+package ph.digipay.digipayelectroniclearning.ui.admin.questionnaire;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Checked;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
-import com.mobsandgeeks.saripaar.annotation.Select;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.common.utils.FormUtils;
+import ph.digipay.digipayelectroniclearning.models.Module;
 import ph.digipay.digipayelectroniclearning.models.Options;
 import ph.digipay.digipayelectroniclearning.models.Questionnaire;
+import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
 
 public class QuestionnaireFormActivity extends BaseActivity implements Validator.ValidationListener {
 
     @NotEmpty
-    private TextInputEditText questionTiet;
-
+    protected TextInputEditText questionTiet;
     @NotEmpty
-    private TextInputEditText option1Tiet;
-
+    protected TextInputEditText option1Tiet;
     @NotEmpty
-    private TextInputEditText option2Tiet;
-
+    protected TextInputEditText option2Tiet;
     @NotEmpty
-    private TextInputEditText option3Tiet;
-
+    protected TextInputEditText option3Tiet;
     @Checked(message = "Please select an answer")
-    private RadioGroup optionsRg;
+    protected RadioGroup optionsRg;
+    protected Spinner moduleSpnr;
 
     private Validator validator;
 
-    private FirebaseDatabase mDatabase;
-    private DatabaseReference questionnaireDataReference;
-
     private String uid = null;
     private boolean isAdding;
+
+    private FirebaseDatabaseHelper<Questionnaire> questionnaireFirebaseDatabase;
+    private List<Module> moduleList;
 
 
     @Override
@@ -62,13 +60,21 @@ public class QuestionnaireFormActivity extends BaseActivity implements Validator
         option2Tiet = findViewById(R.id.option2_tiet);
         option3Tiet = findViewById(R.id.option3_tiet);
         optionsRg = findViewById(R.id.options_rg);
+        moduleSpnr = findViewById(R.id.module_spnr);
         Button actionBtn = findViewById(R.id.action_btn);
 
-        validator = new Validator(this);
-        validator.setValidationListener(this);
-
-        mDatabase = FirebaseDatabase.getInstance();
-        questionnaireDataReference = mDatabase.getReference("questionnaire");
+        questionnaireFirebaseDatabase = new FirebaseDatabaseHelper<>(Questionnaire.class);
+        FirebaseDatabaseHelper<Module> moduleFirebaseDatabase = new FirebaseDatabaseHelper<>(Module.class);
+        moduleFirebaseDatabase.fetchItems(StringConstants.MODULE_DB, itemList -> {
+            moduleList = itemList;
+            List<String> moduleNameList = new ArrayList<>();
+            for (Module module : itemList) {
+                moduleNameList.add(module.getName());
+            }
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_spinner_dropdown_item, moduleNameList);
+            moduleSpnr.setAdapter(arrayAdapter);
+        });
 
 
         Intent intent = getIntent();
@@ -77,25 +83,21 @@ public class QuestionnaireFormActivity extends BaseActivity implements Validator
             actionBtn.setText(getString(R.string.update_questionnaire_btn));
             Questionnaire questionnaire = bundle.getParcelable(StringConstants.QUESTIONNAIRE_FORMS);
             assert questionnaire != null;
-            uid = questionnaire.getId();
             questionTiet.setText(questionnaire.getQuestion());
             option1Tiet.setText(questionnaire.getOptions().getOption1());
             option2Tiet.setText(questionnaire.getOptions().getOption2());
             option3Tiet.setText(questionnaire.getOptions().getOption3());
-            ((RadioButton) optionsRg.getChildAt(Integer.parseInt(questionnaire.getAnswer_index()))).setChecked(true);
+            ((RadioButton) optionsRg.getChildAt(Integer.parseInt(questionnaire.getAnswerIndex()))).setChecked(true);
             isAdding = false;
         } else {
             actionBtn.setText(getString(R.string.add_questionnaire_btn));
             isAdding = true;
         }
 
+        validator = new Validator(this);
+        validator.setValidationListener(this);
 
-        actionBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validator.validate();
-            }
-        });
+        actionBtn.setOnClickListener(v -> validator.validate());
 
     }
 
@@ -109,8 +111,11 @@ public class QuestionnaireFormActivity extends BaseActivity implements Validator
         View radioButton = optionsRg.findViewById(radioButtonID);
         int answer = optionsRg.indexOfChild(radioButton);
         String answerIndex = String.valueOf(answer);
+        String moduleUid = getModuleUid(FormUtils.getSpinnerItemString(moduleSpnr));
+
         if (isAdding) {
-            createNewQuestionnaire(FormUtils.getTrimmedString(questionTiet), options, answerIndex);
+            createNewQuestionnaire(moduleUid,
+                    FormUtils.getTrimmedString(questionTiet), options, answerIndex);
         } else {
             updateQuestionnaireItem(uid, FormUtils.getTrimmedString(questionTiet), options, answerIndex);
         }
@@ -121,26 +126,35 @@ public class QuestionnaireFormActivity extends BaseActivity implements Validator
         displayErrors(errors);
     }
 
-    private void createNewQuestionnaire(String question, String[] options, String answerIndex) {
-        String id = questionnaireDataReference.push().getKey();
-        assert id != null;
-        Questionnaire questionnaire = new Questionnaire(id);
+    private void createNewQuestionnaire(String moduleUid, String question, String[] options, String answerIndex) {
+        Questionnaire questionnaire = new Questionnaire();
+        questionnaire.setModuleUid(moduleUid);
         questionnaire.setQuestion(question);
         questionnaire.setOptions(new Options(options[0], options[1], options[2]));
-        questionnaire.setAnswer_index(answerIndex);
-        questionnaireDataReference.child(id).setValue(questionnaire);
+        questionnaire.setAnswerIndex(answerIndex);
+        questionnaireFirebaseDatabase.insertItems(StringConstants.QUESTIONNAIRE_DB, questionnaire);
         showToast(getString(R.string.add_questionnaire_success_msg));
         finish();
     }
 
-    private void updateQuestionnaireItem(String uid, String question, String [] options, String answerIndex){
-        questionnaireDataReference.child(uid).child("question").setValue(question);
-        questionnaireDataReference.child(uid).child("options").child("option1").setValue(options[0]);
-        questionnaireDataReference.child(uid).child("options").child("option2").setValue(options[1]);
-        questionnaireDataReference.child(uid).child("options").child("option3").setValue(options[2]);
-        questionnaireDataReference.child(uid).child("answer_index").setValue(answerIndex);
+    private void updateQuestionnaireItem(String uid, String question, String[] options, String answerIndex) {
+        questionnaireFirebaseDatabase.updateItem(StringConstants.QUESTIONNAIRE_DB, uid, "question", null, question);
+        questionnaireFirebaseDatabase.updateItem(StringConstants.QUESTIONNAIRE_DB, uid, "options", "option1", options[0]);
+        questionnaireFirebaseDatabase.updateItem(StringConstants.QUESTIONNAIRE_DB, uid, "options", "option2", options[1]);
+        questionnaireFirebaseDatabase.updateItem(StringConstants.QUESTIONNAIRE_DB, uid, "options", "option3", options[2]);
+        questionnaireFirebaseDatabase.updateItem(StringConstants.QUESTIONNAIRE_DB, uid, "answer_index", null, answerIndex);
         showToast(getString(R.string.update_questionnaire_success_msg));
         finish();
+    }
+
+    private String getModuleUid(String moduleName){
+        String moduleUid = null;
+        for (Module module : moduleList) {
+            if (module.getName().equals(moduleName)) {
+                moduleUid = module.getUid();
+            }
+        }
+        return moduleUid;
     }
 
 }

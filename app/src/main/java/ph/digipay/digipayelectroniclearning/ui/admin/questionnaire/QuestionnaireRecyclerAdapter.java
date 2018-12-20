@@ -1,6 +1,5 @@
-package ph.digipay.digipayelectroniclearning.ui;
+package ph.digipay.digipayelectroniclearning.ui.admin.questionnaire;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,14 +13,13 @@ import android.widget.TextView;
 import java.util.List;
 
 import ph.digipay.digipayelectroniclearning.R;
+import ph.digipay.digipayelectroniclearning.common.base.BaseRecyclerAdapter;
 import ph.digipay.digipayelectroniclearning.models.Questionnaire;
 
-public class QuestionnaireRecyclerAdapter extends RecyclerView.Adapter<QuestionnaireRecyclerAdapter.QuestionnaireRecyclerAdapterVH> {
+public class QuestionnaireRecyclerAdapter extends BaseRecyclerAdapter<Questionnaire, QuestionnaireRecyclerAdapter.QuestionnaireRecyclerAdapterVH> {
 
-    private List<Questionnaire> questionsList;
-
-    public QuestionnaireRecyclerAdapter(List<Questionnaire> questionsList) {
-        this.questionsList = questionsList;
+    public QuestionnaireRecyclerAdapter(List<Questionnaire> items) {
+        super(items);
     }
 
     @NonNull
@@ -32,18 +30,18 @@ public class QuestionnaireRecyclerAdapter extends RecyclerView.Adapter<Questionn
 
     @Override
     public void onBindViewHolder(@NonNull QuestionnaireRecyclerAdapterVH holder, int i) {
-        Questionnaire questionnaire = questionsList.get(i);
+        Questionnaire questionnaire = getItem(i);
 
         holder.questionTv.setText(questionnaire.getQuestion());
         holder.option1Rb.setText(questionnaire.getOptions().getOption1());
         holder.option2Rb.setText(questionnaire.getOptions().getOption2());
         holder.option3Rb.setText(questionnaire.getOptions().getOption3());
-        ((RadioButton) holder.answerRg.getChildAt(Integer.parseInt(questionnaire.getAnswer_index()))).setChecked(true);
+        ((RadioButton) holder.answerRg.getChildAt(Integer.parseInt(questionnaire.getAnswerIndex()))).setChecked(true);
     }
 
     @Override
     public int getItemCount() {
-        return questionsList.size();
+        return getItems().size();
     }
 
     class QuestionnaireRecyclerAdapterVH  extends RecyclerView.ViewHolder {
@@ -55,7 +53,7 @@ public class QuestionnaireRecyclerAdapter extends RecyclerView.Adapter<Questionn
         private RadioButton option2Rb;
         private RadioButton option3Rb;
 
-        public QuestionnaireRecyclerAdapterVH(@NonNull View itemView) {
+        QuestionnaireRecyclerAdapterVH(@NonNull View itemView) {
             super(itemView);
             questionnaireLL = itemView.findViewById(R.id.questionnaire_ll);
             questionTv = itemView.findViewById(R.id.question_tv);
