@@ -85,7 +85,7 @@ public class LoginActivity extends BaseActivity implements Validator.ValidationL
                     for (DataSnapshot users : dataSnapshot.getChildren()) {
                         User user = users.getValue(User.class);
                         if (user != null) {
-                            if (logEmail.equals(user.getUsername()) && logPassword.equals(user.getPassword())){
+                            if (logEmail.equals(user.getUsername()) && logPassword.equals(user.getPassword())) {
                                 launchMain(user);
                             } else {
                                 showToast("Incorrect password");
@@ -110,17 +110,14 @@ public class LoginActivity extends BaseActivity implements Validator.ValidationL
         displayErrors(errors);
     }
 
-    private void launchMain(User user){
+    private void launchMain(User user) {
         sharedPrefManager.setLogin(true);
         sharedPrefManager.setLoginUser(user);
-        if (user.getUserType().equals(StringConstants.TYPE_ADMIN)){
+        if (user.getUserType().equals(StringConstants.TYPE_ADMIN)) {
             startActivity(new Intent(getApplicationContext(), AdminMainActivity.class));
-        }
-
-        if (user.getUserType().equals(StringConstants.TYPE_USER)){
+        } else if (user.getUserType().equals(StringConstants.TYPE_USER)) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
         }
-
         finish();
     }
 

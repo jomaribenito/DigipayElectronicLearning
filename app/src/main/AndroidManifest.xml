@@ -19,7 +19,7 @@
         <activity android:name=".ui.MainActivity" />
         <activity android:name=".ui.QuestionnaireActivity" />
         <activity android:name=".ui.EvaluationActivity" />
-        <activity android:name=".ui.TutorialVideoActivity" />
+        <activity android:name=".ui.VideoPlayerActivity" />
         <activity
             android:name=".ui.LoginActivity"
             android:label="@string/title_activity_login" />

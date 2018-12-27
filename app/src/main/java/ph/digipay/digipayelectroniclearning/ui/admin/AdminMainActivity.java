@@ -16,11 +16,12 @@ import android.widget.ExpandableListView;
 
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
-import ph.digipay.digipayelectroniclearning.models.MainForm;
 import ph.digipay.digipayelectroniclearning.models.Module;
 import ph.digipay.digipayelectroniclearning.models.PDFForm;
 import ph.digipay.digipayelectroniclearning.models.Questionnaire;
 import ph.digipay.digipayelectroniclearning.models.VideoForm;
+import ph.digipay.digipayelectroniclearning.ui.PDFBrowserActivity;
+import ph.digipay.digipayelectroniclearning.ui.VideoPlayerActivity;
 import ph.digipay.digipayelectroniclearning.ui.admin.module.ModuleActivity;
 import ph.digipay.digipayelectroniclearning.ui.admin.pdf.PDFManagementActivity;
 import ph.digipay.digipayelectroniclearning.ui.admin.questionnaire.QuestionnaireManagementActivity;
@@ -71,14 +72,9 @@ public class AdminMainActivity extends AppCompatActivity
 
         expandableListView.setAdapter(mainExpandableAdapter);
 
-        mainExpandableAdapter.getPdfFormPublishSubject().subscribe(pdfForm -> {
-            Log.e("TAG", pdfForm.getName());
-        });
+        mainExpandableAdapter.getPdfFormPublishSubject().subscribe(pdfForm -> startActivity(new Intent(this, PDFBrowserActivity.class).putExtra(StringConstants.PDF_URL, pdfForm.getPdfLink())));
 
-        mainExpandableAdapter.getVideoFormPublishSubject().subscribe(videoForm -> {
-            Log.e("TAG", videoForm.getName());
-
-        });
+        mainExpandableAdapter.getVideoFormPublishSubject().subscribe(videoForm -> startActivity(new Intent(this, VideoPlayerActivity.class).putExtra(StringConstants.VIDEO_URL, videoForm.getVideoLink())));
 
         mainExpandableAdapter.getQuestionnairePublishSubject().subscribe(questionnaire -> {
             Log.e("TAG", questionnaire.getQuestion());

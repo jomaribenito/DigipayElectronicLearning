@@ -14,6 +14,7 @@ import com.mobsandgeeks.saripaar.annotation.Url;
 import java.util.ArrayList;
 import java.util.List;
 
+import ph.digipay.digipayelectroniclearning.BuildConfig;
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
@@ -51,6 +52,10 @@ public class PDFFormActivity extends BaseActivity implements Validator.Validatio
         validator.setValidationListener(this);
 
         pdfFormFirebaseDatabase = new FirebaseDatabaseHelper<>(PDFForm.class);
+
+        if (BuildConfig.DEBUG){
+            pdfUrlTiet.setText("https://s3-ap-southeast-1.amazonaws.com/digipay-core-bucket/production/docs/FSG+Data+Privacy+Statement_July+2018.pdf");
+        }
 
         FirebaseDatabaseHelper<Module> moduleFirebaseDatabase = new FirebaseDatabaseHelper<>(Module.class);
         moduleFirebaseDatabase.fetchItems(StringConstants.MODULE_DB, itemList -> {

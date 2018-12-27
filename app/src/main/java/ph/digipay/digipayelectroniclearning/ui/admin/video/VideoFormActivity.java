@@ -14,6 +14,7 @@ import com.mobsandgeeks.saripaar.annotation.Url;
 import java.util.ArrayList;
 import java.util.List;
 
+import ph.digipay.digipayelectroniclearning.BuildConfig;
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
@@ -52,6 +53,10 @@ public class VideoFormActivity extends BaseActivity implements Validator.Validat
 
         validator = new Validator(this);
         validator.setValidationListener(this);
+
+        if (BuildConfig.DEBUG){
+            videoUrlTiet.setText("https://s3-ap-southeast-1.amazonaws.com/healthguard.digipay.ph/tutorial-test.mp4");
+        }
 
         FirebaseDatabaseHelper<Module> moduleFirebaseDatabase = new FirebaseDatabaseHelper<>(Module.class);
         moduleFirebaseDatabase.fetchItems(StringConstants.MODULE_DB, itemList -> {

@@ -2,7 +2,6 @@ package ph.digipay.digipayelectroniclearning.ui;
 
 import android.app.ProgressDialog;
 import android.graphics.PixelFormat;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.MediaController;
@@ -10,11 +9,11 @@ import android.widget.VideoView;
 
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
+import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 
-public class TutorialVideoActivity extends BaseActivity {
+public class VideoPlayerActivity extends BaseActivity {
 
     private VideoView videoView;
-    public static final String TUTS_URL = "https://s3-ap-southeast-1.amazonaws.com/healthguard.digipay.ph/tutorial-test.mp4";
     private static ProgressDialog progressDialog;
 
     @Override
@@ -26,36 +25,31 @@ public class TutorialVideoActivity extends BaseActivity {
         progressDialog = ProgressDialog.show(this, "", "Buffering video...", true);
         progressDialog.setCancelable(false);
 
-        playVideo();
-    }
-
-    private void playVideo()
-    {
-        try
-        {
+        try {
             getWindow().setFormat(PixelFormat.TRANSLUCENT);
             MediaController mediaController = new MediaController(this);
             mediaController.setAnchorView(videoView);
 
-            Uri video = Uri.parse(TutorialVideoActivity.TUTS_URL);
-            videoView.setMediaController(mediaController);
-            videoView.setVideoURI(video);
-            videoView.requestFocus();
-            videoView.setOnPreparedListener(mp -> {
-                progressDialog.dismiss();
-                videoView.start();
-            });
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null) {
+                String url = bundle.getString(StringConstants.VIDEO_URL);
+                assert url != null;
+                Uri video = Uri.parse(url);
+                videoView.setMediaController(mediaController);
+                videoView.setVideoURI(video);
+                videoView.requestFocus();
+                videoView.setOnPreparedListener(mp -> {
+                    progressDialog.dismiss();
+                    videoView.start();
+                });
+            }
 
 
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             progressDialog.dismiss();
-            System.out.println("Video Play Error :"+e.toString());
+            System.out.println("Video Play Error :" + e.toString());
             finish();
         }
-
     }
-
 
 }

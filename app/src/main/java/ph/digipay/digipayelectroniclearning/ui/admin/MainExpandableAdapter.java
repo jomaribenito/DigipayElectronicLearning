@@ -10,6 +10,7 @@ import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -105,6 +106,30 @@ public class MainExpandableAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+
+        Module module = (Module) getGroup(groupPosition);
+        List<PDFForm> pdfFormList = new ArrayList<>();
+        List<VideoForm> videoFormList = new ArrayList<>();
+        List<Questionnaire> questionnaireList = new ArrayList<>();
+
+        for (PDFForm pdfForm : this.pdfFormList){
+            if (pdfForm.getModuleUid().equals(module.getUid())){
+                pdfFormList.add(pdfForm);
+            }
+        }
+
+        for (VideoForm videoForm : this.videoFormList){
+            if (videoForm.getModuleUid().equals(module.getUid())){
+                videoFormList.add(videoForm);
+            }
+        }
+
+        for (Questionnaire questionnaire : this.questionnaireList){
+            if (questionnaire.getModuleUid().equals(module.getUid())){
+                questionnaireList.add(questionnaire);
+            }
+        }
+
         SecondLevelExpandableListView secondLevelELV = new SecondLevelExpandableListView(context);
         secondLevelELV.setAdapter(new SecondLevelAdapter(context, subGroupList, pdfFormList, videoFormList, questionnaireList));
         secondLevelELV.setGroupIndicator(null);
