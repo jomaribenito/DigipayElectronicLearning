@@ -1,5 +1,6 @@
 package ph.digipay.digipayelectroniclearning.ui.admin;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -38,6 +39,7 @@ public class AdminMainActivity extends AppCompatActivity
 
     private MainExpandableAdapter mainExpandableAdapter;
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +70,20 @@ public class AdminMainActivity extends AppCompatActivity
         questionnaireFirebaseDatabase.fetchItems(StringConstants.QUESTIONNAIRE_DB, newValue -> mainExpandableAdapter.setQuestionnaireList(newValue));
 
         expandableListView.setAdapter(mainExpandableAdapter);
+
+        mainExpandableAdapter.getPdfFormPublishSubject().subscribe(pdfForm -> {
+            Log.e("TAG", pdfForm.getName());
+        });
+
+        mainExpandableAdapter.getVideoFormPublishSubject().subscribe(videoForm -> {
+            Log.e("TAG", videoForm.getName());
+
+        });
+
+        mainExpandableAdapter.getQuestionnairePublishSubject().subscribe(questionnaire -> {
+            Log.e("TAG", questionnaire.getQuestion());
+
+        });
 
     }
 

@@ -24,7 +24,6 @@ public class MainActivity extends BaseActivity {
 
     private SharedPrefManager sharedPrefManager;
     private RecyclerView mainMenuRv;
-    private MenuRecyclerAdapter menuRecyclerAdapter;
     private List<IconText> iconTextList;
     private FirebaseDatabaseHelper<Module> modulesFirebaseDatabase;
     private ModuleRecyclerAdapter moduleRecyclerAdapter;
