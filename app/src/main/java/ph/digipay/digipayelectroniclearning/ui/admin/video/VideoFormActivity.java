@@ -81,6 +81,7 @@ public class VideoFormActivity extends BaseActivity implements Validator.Validat
                 FormUtils.getTrimmedString(videoUrlTiet),
                 FormUtils.getTrimmedString(videoNameTiet),
                 FormUtils.getTrimmedString(videoDescriptionTiet));
+        finish();
     }
 
     @Override

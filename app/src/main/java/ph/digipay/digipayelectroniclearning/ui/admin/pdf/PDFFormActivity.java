@@ -94,6 +94,7 @@ public class PDFFormActivity extends BaseActivity implements Validator.Validatio
         pdfForm.setName(pdfName);
         pdfForm.setDescription(pdfDescription);
         pdfFormFirebaseDatabase.insertItems(StringConstants.PDF_LIST_DB, pdfForm);
+        finish();
     }
 
     private String getModuleUid(String moduleName){
