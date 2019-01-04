@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
+import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +25,7 @@ import ph.digipay.digipayelectroniclearning.common.constants.SharedPrefManager;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.models.User;
 import ph.digipay.digipayelectroniclearning.ui.admin.AdminMainActivity;
+import ph.digipay.digipayelectroniclearning.ui.user.MainActivity;
 
 public class LoginActivity extends BaseActivity implements Validator.ValidationListener {
 
@@ -113,12 +115,14 @@ public class LoginActivity extends BaseActivity implements Validator.ValidationL
     private void launchMain(User user) {
         sharedPrefManager.setLogin(true);
         sharedPrefManager.setLoginUser(user);
-        if (user.getUserType().equals(StringConstants.TYPE_ADMIN)) {
+        String userType = user.getUserType();
+        if (userType.equals(StringConstants.TYPE_ADMIN)) {
             startActivity(new Intent(getApplicationContext(), AdminMainActivity.class));
-        } else if (user.getUserType().equals(StringConstants.TYPE_USER)) {
+            finish();
+        } else {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
         }
-        finish();
     }
 
 }

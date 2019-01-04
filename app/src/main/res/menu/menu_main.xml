@@ -6,10 +6,4 @@
         android:icon="@drawable/ic_logout_24dp"
         android:title="Logout"
         app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/action_manage"
-        android:icon="@android:drawable/ic_menu_manage"
-        android:title="Manage Modules"
-        app:showAsAction="collapseActionView" />
 </menu>

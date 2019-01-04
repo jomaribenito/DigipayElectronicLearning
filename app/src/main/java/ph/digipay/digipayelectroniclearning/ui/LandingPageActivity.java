@@ -1,14 +1,15 @@
 package ph.digipay.digipayelectroniclearning.ui;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
 import ph.digipay.digipayelectroniclearning.common.constants.SharedPrefManager;
+import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.ui.admin.AdminMainActivity;
+import ph.digipay.digipayelectroniclearning.ui.user.MainActivity;
 
 public class LandingPageActivity extends BaseActivity {
 
@@ -21,13 +22,26 @@ public class LandingPageActivity extends BaseActivity {
 
         sharedPrefManager = new SharedPrefManager(this);
 
-        if (sharedPrefManager.isLogin()){
-            startActivity(new Intent(getApplicationContext(), AdminMainActivity.class));
-            finish();
+        if (sharedPrefManager.isLogin()) {
+            String userType = sharedPrefManager.getLoginUser().getUserType();
+            if (userType.equals(StringConstants.TYPE_ADMIN)) {
+                startActivity(new Intent(getApplicationContext(), AdminMainActivity.class));
+                finish();
+            } else {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
+            }
+
         }
 
-        findViewById(R.id.sign_in_btn).setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), LoginActivity.class)));
+        findViewById(R.id.sign_in_btn).setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            finish();
+        });
 
-        findViewById(R.id.register_btn).setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), RegisterActivity.class)));
+        findViewById(R.id.register_btn).setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+            finish();
+        });
     }
 }

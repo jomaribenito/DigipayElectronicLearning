@@ -13,4 +13,5 @@ public class StringConstants {
     public static final String USERS_DB = "users";
     public static final String PDF_LIST_DB = "pdf_list";
     public static final String VIDEO_LIST_DB = "video_list";
+    public static final String MODULE_UID = "module_uid";
 }

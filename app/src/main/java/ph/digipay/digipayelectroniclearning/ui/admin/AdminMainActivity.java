@@ -15,13 +15,15 @@ import android.view.MenuItem;
 import android.widget.ExpandableListView;
 
 import ph.digipay.digipayelectroniclearning.R;
+import ph.digipay.digipayelectroniclearning.common.constants.SharedPrefManager;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.models.Module;
 import ph.digipay.digipayelectroniclearning.models.PDFForm;
 import ph.digipay.digipayelectroniclearning.models.Questionnaire;
 import ph.digipay.digipayelectroniclearning.models.VideoForm;
-import ph.digipay.digipayelectroniclearning.ui.PDFBrowserActivity;
-import ph.digipay.digipayelectroniclearning.ui.VideoPlayerActivity;
+import ph.digipay.digipayelectroniclearning.ui.LandingPageActivity;
+import ph.digipay.digipayelectroniclearning.ui.common.PDFBrowserActivity;
+import ph.digipay.digipayelectroniclearning.ui.common.VideoPlayerActivity;
 import ph.digipay.digipayelectroniclearning.ui.admin.module.ModuleActivity;
 import ph.digipay.digipayelectroniclearning.ui.admin.pdf.PDFManagementActivity;
 import ph.digipay.digipayelectroniclearning.ui.admin.questionnaire.QuestionnaireManagementActivity;
@@ -31,6 +33,7 @@ import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDataba
 public class AdminMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private SharedPrefManager sharedPrefManager;
     private ExpandableListView expandableListView;
 
     private FirebaseDatabaseHelper<Module> moduleFirebaseDatabase;
@@ -47,6 +50,8 @@ public class AdminMainActivity extends AppCompatActivity
         setContentView(R.layout.activity_admin_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        sharedPrefManager = new SharedPrefManager(this);
 
         expandableListView = findViewById(R.id.admin_main_elv);
 
@@ -78,7 +83,6 @@ public class AdminMainActivity extends AppCompatActivity
 
         mainExpandableAdapter.getQuestionnairePublishSubject().subscribe(questionnaire -> {
             Log.e("TAG", questionnaire.getQuestion());
-
         });
 
     }
@@ -133,6 +137,9 @@ public class AdminMainActivity extends AppCompatActivity
                 startActivity(new Intent(getApplicationContext(), QuestionnaireManagementActivity.class));
                 break;
             case R.id.nav_logout:
+                sharedPrefManager.setLogin(false);
+                finish();
+                startActivity(new Intent(getApplicationContext(), LandingPageActivity.class));
                 break;
         }
 

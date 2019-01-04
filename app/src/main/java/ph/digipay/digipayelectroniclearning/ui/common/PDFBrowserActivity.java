@@ -1,4 +1,4 @@
-package ph.digipay.digipayelectroniclearning.ui;
+package ph.digipay.digipayelectroniclearning.ui.common;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?selectableItemBackground"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center"
-    android:orientation="horizontal"
-    android:padding="10dp">
+    android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/icon_iv"
@@ -24,15 +22,15 @@
             android:id="@+id/title_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tutorial Video"
             android:textColor="@color/colorPrimary"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            tools:text="Module Name"/>
 
         <TextView
             android:id="@+id/description_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Watch the video guide of the microinsurance agent test" />
+            tools:text="Module Description"/>
 
     </LinearLayout>
 

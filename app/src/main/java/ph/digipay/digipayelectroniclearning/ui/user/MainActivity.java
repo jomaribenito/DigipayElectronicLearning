@@ -1,4 +1,4 @@
-package ph.digipay.digipayelectroniclearning.ui;
+package ph.digipay.digipayelectroniclearning.ui.user;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,21 +13,19 @@ import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
 import ph.digipay.digipayelectroniclearning.common.constants.SharedPrefManager;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.common.utils.EndlessRecyclerLinearLayoutManager;
+import ph.digipay.digipayelectroniclearning.common.utils.FragmentUtils;
 import ph.digipay.digipayelectroniclearning.models.IconText;
 import ph.digipay.digipayelectroniclearning.models.Module;
 import ph.digipay.digipayelectroniclearning.models.User;
+import ph.digipay.digipayelectroniclearning.ui.LandingPageActivity;
 import ph.digipay.digipayelectroniclearning.ui.admin.module.ModuleActivity;
 import ph.digipay.digipayelectroniclearning.ui.admin.module.ModuleRecyclerAdapter;
 import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements MainContract{
 
     private SharedPrefManager sharedPrefManager;
-    private RecyclerView mainMenuRv;
-    private List<IconText> iconTextList;
-    private FirebaseDatabaseHelper<Module> modulesFirebaseDatabase;
-    private ModuleRecyclerAdapter moduleRecyclerAdapter;
-    private List<Module> modulesList;
+    private static final int ID_FRAGMENT_CONTAINER = R.id.main_activity_fragment_container;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,20 +33,11 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mainMenuRv = findViewById(R.id.main_menu_rv);
-
         sharedPrefManager = new SharedPrefManager(this);
 
         User user = sharedPrefManager.getLoginUser();
 
-        modulesFirebaseDatabase = new FirebaseDatabaseHelper<>(Module.class);
-
-        modulesFirebaseDatabase.fetchItems(StringConstants.MODULE_DB, itemList -> {
-            moduleRecyclerAdapter = new ModuleRecyclerAdapter(modulesList);
-            mainMenuRv.setLayoutManager(new EndlessRecyclerLinearLayoutManager(getApplicationContext()));
-            mainMenuRv.setAdapter(moduleRecyclerAdapter);
-        });
-
+        showModule();
     }
 
     @Override
@@ -67,17 +56,37 @@ public class MainActivity extends BaseActivity {
             finish();
             startActivity(new Intent(getApplicationContext(), LandingPageActivity.class));
             return true;
-        } else if (id == R.id.action_manage) {
-            startActivity(new Intent(getApplicationContext(), ModuleActivity.class));
-            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finishAffinity();
+    public void showModule() {
+        ModuleFragment moduleFragment = ModuleFragment.newInstance();
+        FragmentUtils.addFragment(this, ID_FRAGMENT_CONTAINER, moduleFragment);
+    }
+
+    @Override
+    public void showContent(String moduleUid) {
+        ContentFragment contentFragment = ContentFragment.newInstance(moduleUid);
+        FragmentUtils.replaceFragmentAddToBackStack(this, ID_FRAGMENT_CONTAINER, contentFragment);
+    }
+
+    @Override
+    public void showPDFList(String moduleUid) {
+        PDFListFragment pdfListFragment = PDFListFragment.newInstance(moduleUid);
+        FragmentUtils.replaceFragmentAddToBackStack(this, ID_FRAGMENT_CONTAINER, pdfListFragment);
+    }
+
+    @Override
+    public void showVideoList(String moduleUid) {
+        VideoListFragment videoListFragment = VideoListFragment.newInstance(moduleUid);
+        FragmentUtils.replaceFragmentAddToBackStack(this, ID_FRAGMENT_CONTAINER, videoListFragment);
+    }
+
+    @Override
+    public void showQuestionnaire(String moduleUid) {
+        startActivity(new Intent(this, QuestionnaireListActivity.class));
     }
 }

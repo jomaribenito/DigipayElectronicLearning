@@ -16,10 +16,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MainActivity" />
+        <activity android:name=".ui.user.MainActivity" />
         <activity android:name=".ui.QuestionnaireActivity" />
         <activity android:name=".ui.EvaluationActivity" />
-        <activity android:name=".ui.VideoPlayerActivity" />
+        <activity android:name=".ui.common.VideoPlayerActivity" />
         <activity
             android:name=".ui.LoginActivity"
             android:label="@string/title_activity_login" />
@@ -38,7 +38,7 @@
             android:name=".ui.admin.questionnaire.QuestionnaireManagementActivity"
             android:label="@string/title_activity_questionnaire_management"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.PDFBrowserActivity" />
+        <activity android:name=".ui.common.PDFBrowserActivity" />
         <activity android:name=".ui.admin.module.ModuleActivity" />
         <activity
             android:name=".ui.admin.AdminMainActivity"
@@ -47,7 +47,8 @@
         <activity android:name=".ui.admin.pdf.PDFManagementActivity" />
         <activity android:name=".ui.admin.pdf.PDFFormActivity" />
         <activity android:name=".ui.admin.video.VideoManagementActivity" />
-        <activity android:name=".ui.admin.video.VideoFormActivity"></activity>
+        <activity android:name=".ui.admin.video.VideoFormActivity" />
+        <activity android:name=".ui.user.QuestionnaireListActivity"></activity>
     </application>
 
 </manifest>
