@@ -7,7 +7,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseFragment;
@@ -17,9 +18,13 @@ import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 public class ContentFragment extends BaseFragment {
 
     private MainContract mainContract;
-    private LinearLayout pdfListContainer;
-    private LinearLayout videoListContainer;
-    private LinearLayout questionnaireContainer;
+    private RelativeLayout pdfListContainer;
+    private RelativeLayout videoListContainer;
+    private RelativeLayout questionnaireContainer;
+    boolean isQuestionnaireClickable;
+    boolean isVideoListClickable;
+    private TextView videoLock;
+    private TextView questionnaireLock;
 
     private String moduleUid;
 
@@ -39,24 +44,37 @@ public class ContentFragment extends BaseFragment {
     public void initialize() {
         pdfListContainer.setOnClickListener(v -> {
             mainContract.showPDFList(moduleUid);
+            isVideoListClickable = true;
         });
 
         videoListContainer.setOnClickListener(v -> {
+            if (!isVideoListClickable)
+                return;
             mainContract.showVideoList(moduleUid);
+            isQuestionnaireClickable = true;
         });
 
         questionnaireContainer.setOnClickListener(v -> {
+            if (!isQuestionnaireClickable)
+                return;
             mainContract.showQuestionnaire(moduleUid);
         });
+
+        if (isVideoListClickable)
+            videoLock.setVisibility(View.GONE);
+
+        if (isQuestionnaireClickable)
+            questionnaireLock.setVisibility(View.GONE);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null){
+        if (getArguments() != null) {
             moduleUid = getArguments().getString(StringConstants.MODULE_UID);
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,6 +87,8 @@ public class ContentFragment extends BaseFragment {
         pdfListContainer = view.findViewById(R.id.pdf_list_container);
         videoListContainer = view.findViewById(R.id.video_list_container);
         questionnaireContainer = view.findViewById(R.id.questionnaire_list_container);
+        videoLock = view.findViewById(R.id.video_lock_iv);
+        questionnaireLock = view.findViewById(R.id.questionnaire_lock_iv);
         super.onViewCreated(view, savedInstanceState);
     }
 

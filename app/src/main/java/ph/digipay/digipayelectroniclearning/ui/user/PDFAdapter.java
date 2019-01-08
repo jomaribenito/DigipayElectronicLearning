@@ -32,6 +32,7 @@ public class PDFAdapter extends BaseRecyclerAdapter<PDFForm, IconTextVH> {
     public void onBindViewHolder(@NonNull IconTextVH holder, int i) {
         PDFForm pdfForm = getItem(i);
 
+        holder.icon.setImageResource(R.drawable.ic_paper_24dp);
         holder.title.setText(pdfForm.getName());
         holder.description.setText(pdfForm.getDescription());
         holder.itemContainer.setOnClickListener(v -> {

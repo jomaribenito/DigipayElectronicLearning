@@ -34,6 +34,7 @@ public class ModuleAdapter extends BaseRecyclerAdapter<Module, IconTextVH> {
     public void onBindViewHolder(@NonNull IconTextVH holder, int i) {
         Module module = getItem(i);
 
+        holder.icon.setImageResource(R.drawable.ic_folder_open_24dp);
         holder.title.setText(module.getName());
         holder.description.setText(module.getDescription());
         holder.itemContainer.setOnClickListener(v -> {

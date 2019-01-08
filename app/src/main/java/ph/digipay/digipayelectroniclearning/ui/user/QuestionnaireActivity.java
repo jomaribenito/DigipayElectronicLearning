@@ -1,4 +1,4 @@
-package ph.digipay.digipayelectroniclearning.ui;
+package ph.digipay.digipayelectroniclearning.ui.user;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,7 +25,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,6 +35,7 @@ import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.models.Questionnaire;
+import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
 
 public class QuestionnaireActivity extends BaseActivity {
 
@@ -48,16 +51,13 @@ public class QuestionnaireActivity extends BaseActivity {
     private LinearLayout questionnaireContainer;
 
     private ArrayList<Integer> answerList;
-
-    private FirebaseDatabase mDatabase;
-    private DatabaseReference questionnaireDataReference;
-
     private List<Questionnaire> questionnaireList;
-
     int ctr = 0;
     private int numberOfCorrectAnswer = 0;
-
     private CountDownTimer countDownTimer;
+
+    private String moduleUid;
+    private ArrayList<Integer> randomList;
 
 
     @Override
@@ -78,67 +78,31 @@ public class QuestionnaireActivity extends BaseActivity {
         doneBtn = findViewById(R.id.done_btn);
         questionnaireContainer = findViewById(R.id.questionnaire_container_ll);
 
-        questionTv.setFactory(() -> {
-            TextView textView = new TextView(getApplicationContext());
-            textView.setTextColor(Color.BLACK);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-            return textView;
-        });
+        setQuestionTv();
+        setTimerTv();
+        initCountDownTimer();
 
-        Animation textAnimationIn = AnimationUtils.
-                loadAnimation(this, android.R.anim.slide_in_left);
-        textAnimationIn.setDuration(800);
+        Bundle bndl = getIntent().getExtras();
+        if (bndl != null) {
+            moduleUid = bndl.getString(StringConstants.MODULE_UID);
+        }
 
-        Animation textAnimationOut = AnimationUtils.
-                loadAnimation(this, android.R.anim.slide_out_right);
-        textAnimationOut.setDuration(800);
-
-        questionTv.setInAnimation(textAnimationIn);
-        questionTv.setOutAnimation(textAnimationOut);
-
-        timerTv.setFactory(() -> {
-            TextView textView = new TextView(getApplicationContext());
-            textView.setTextColor(Color.BLACK);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
-            textView.setGravity(Gravity.END);
-            return textView;
-        });
-
-        Animation textAnimationIn2 = AnimationUtils.
-                loadAnimation(this, android.R.anim.fade_in);
-        textAnimationIn.setDuration(800);
-
-        Animation textAnimationOut2 = AnimationUtils.
-                loadAnimation(this, android.R.anim.fade_out);
-        textAnimationOut.setDuration(800);
-
-        timerTv.setInAnimation(textAnimationIn2);
-        timerTv.setOutAnimation(textAnimationOut2);
-
-
-        countDownTimer = new CountDownTimer(11000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                timerTv.setText("Timer: " + millisUntilFinished / 1000);
-            }
-
-            public void onFinish() {
-                nextBtn.performClick();
-                countDownTimer.cancel();
-                if (nextBtn.getVisibility() == View.VISIBLE) {
-                    countDownTimer.start();
-                } else {
-                    timerTv.setVisibility(View.GONE);
-                    countDownTimer.cancel();
+        FirebaseDatabaseHelper<Questionnaire> questionnaireFirebaseDatabase =
+                new FirebaseDatabaseHelper<>(Questionnaire.class);
+        questionnaireFirebaseDatabase.fetchItems(StringConstants.QUESTIONNAIRE_DB, itemList -> {
+            questionnaireList = new ArrayList<>();
+            for (Questionnaire questionnaire: itemList){
+                if (questionnaire.getModuleUid().equals(moduleUid)){
+                    questionnaireList.add(questionnaire);
                 }
             }
+            hideProgressDialog();
+            randomList = getRandomList(questionnaireList.size());
+            loadData(randomList.get(ctr));
+            ctr++;
+            countDownTimer.start();
+        });
 
-        };
-
-        mDatabase = FirebaseDatabase.getInstance();
-        questionnaireDataReference = mDatabase.getReference("questionnaire");
-
-        populateQuestionnaire();
 
 
         answerList = new ArrayList<>();
@@ -150,7 +114,7 @@ public class QuestionnaireActivity extends BaseActivity {
             answerList.add(answer);
             answerRg.clearCheck();
             if (ctr <= questionnaireList.size()) {
-                if (Integer.parseInt(questionnaireList.get(ctr - 1).getAnswerIndex()) == answer) {
+                if (Integer.parseInt(questionnaireList.get(randomList.get(ctr - 1)).getAnswerIndex()) == answer) {
                     //correct
                     showMessageDialog("You got it right!");
                     numberOfCorrectAnswer++;
@@ -166,7 +130,7 @@ public class QuestionnaireActivity extends BaseActivity {
                     countDownTimer.cancel();
                     timerTv.setVisibility(View.GONE);
                 } else {
-                    loadData(ctr);
+                    loadData(randomList.get(ctr));
                     ctr++;
                     countDownTimer.start();
                 }
@@ -178,6 +142,8 @@ public class QuestionnaireActivity extends BaseActivity {
             Bundle bundle = new Bundle();
             bundle.putIntegerArrayList(StringConstants.ANSWER_LIST, answerList);
             bundle.putInt(StringConstants.CORRECT_ANSWERS, numberOfCorrectAnswer);
+            bundle.putString(StringConstants.MODULE_UID, moduleUid);
+            bundle.putIntegerArrayList(StringConstants.RANDOM_LIST, randomList);
             Intent intent = new Intent(getApplicationContext(), EvaluationActivity.class);
             intent.putExtras(bundle);
             startActivity(intent);
@@ -185,31 +151,6 @@ public class QuestionnaireActivity extends BaseActivity {
         });
 
 
-    }
-
-    private void populateQuestionnaire() {
-        questionnaireDataReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                questionnaireList = new ArrayList<>();
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    if (dataSnapshot1 != null) {
-                        Questionnaire questionnaire = dataSnapshot1.getValue(Questionnaire.class);
-                        questionnaireList.add(questionnaire);
-
-                    }
-                }
-                hideProgressDialog();
-                loadData(ctr);
-                ctr++;
-                countDownTimer.start();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void loadData(int ctr) {
@@ -238,6 +179,82 @@ public class QuestionnaireActivity extends BaseActivity {
             }, 1000); // after 1 second (or 1000 miliseconds), the task will be active.
         }
 
+    }
+
+    private void initCountDownTimer(){
+        countDownTimer = new CountDownTimer(11000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                timerTv.setText("Timer: " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                nextBtn.performClick();
+                countDownTimer.cancel();
+                if (nextBtn.getVisibility() == View.VISIBLE) {
+                    countDownTimer.start();
+                } else {
+                    timerTv.setVisibility(View.GONE);
+                    countDownTimer.cancel();
+                }
+            }
+
+        };
+    }
+
+    private void setQuestionTv(){
+        questionTv.setFactory(() -> {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setTextColor(Color.BLACK);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            return textView;
+        });
+
+        Animation textAnimationIn = AnimationUtils.
+                loadAnimation(this, android.R.anim.slide_in_left);
+        textAnimationIn.setDuration(800);
+
+        Animation textAnimationOut = AnimationUtils.
+                loadAnimation(this, android.R.anim.slide_out_right);
+        textAnimationOut.setDuration(800);
+
+        questionTv.setInAnimation(textAnimationIn);
+        questionTv.setOutAnimation(textAnimationOut);
+    }
+
+    private void setTimerTv(){
+        timerTv.setFactory(() -> {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setTextColor(Color.BLACK);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
+            textView.setGravity(Gravity.END);
+            return textView;
+        });
+
+        Animation textAnimationIn = AnimationUtils.
+                loadAnimation(this, android.R.anim.fade_in);
+        textAnimationIn.setDuration(800);
+
+        Animation textAnimationOut = AnimationUtils.
+                loadAnimation(this, android.R.anim.fade_out);
+        textAnimationOut.setDuration(800);
+
+        timerTv.setInAnimation(textAnimationIn);
+        timerTv.setOutAnimation(textAnimationOut);
+    }
+
+    private ArrayList<Integer> getRandomList(int size){
+        ArrayList<Integer> randomNumberList = new ArrayList<>();
+        List<Integer> numberList = new LinkedList<>();
+        for(int i = 0; i <= size - 1; i++) {
+            numberList.add(i);
+        }
+        Random rand = new Random();
+        while(numberList.size() > 0) {
+            int index = rand.nextInt(numberList.size());
+            randomNumberList.add(numberList.remove(index));
+        }
+        return randomNumberList;
     }
 
 }

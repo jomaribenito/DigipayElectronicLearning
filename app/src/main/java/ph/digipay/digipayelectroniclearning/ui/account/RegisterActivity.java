@@ -1,4 +1,4 @@
-package ph.digipay.digipayelectroniclearning.ui;
+package ph.digipay.digipayelectroniclearning.ui.account;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

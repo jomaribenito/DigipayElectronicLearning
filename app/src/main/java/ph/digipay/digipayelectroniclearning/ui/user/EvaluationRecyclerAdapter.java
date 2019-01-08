@@ -1,4 +1,4 @@
-package ph.digipay.digipayelectroniclearning.ui;
+package ph.digipay.digipayelectroniclearning.ui.user;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -13,22 +13,20 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ph.digipay.digipayelectroniclearning.R;
+import ph.digipay.digipayelectroniclearning.common.base.BaseRecyclerAdapter;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.models.Questionnaire;
 
-public class EvaluationRecyclerAdapter extends RecyclerView.Adapter<EvaluationRecyclerAdapter.EvaluationRecyclerAdapterVH> {
+public class EvaluationRecyclerAdapter extends BaseRecyclerAdapter<Questionnaire, EvaluationRecyclerAdapter.EvaluationRecyclerAdapterVH> {
 
     private Activity activity;
     private ArrayList<Integer> answerList;
+    private ArrayList<Integer> randomList;
 
-    private List<Questionnaire> questionnaireList;
-
-    public EvaluationRecyclerAdapter(Activity activity, List<Questionnaire> questionnaireList) {
+    public EvaluationRecyclerAdapter(Activity activity) {
         this.activity = activity;
-        this.questionnaireList = questionnaireList;
     }
 
 
@@ -40,26 +38,26 @@ public class EvaluationRecyclerAdapter extends RecyclerView.Adapter<EvaluationRe
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EvaluationRecyclerAdapterVH holder, int i) {
-        Questionnaire questionnaire = questionnaireList.get(i);
+    public void onBindViewHolder(@NonNull EvaluationRecyclerAdapterVH holder, int position) {
+        Bundle bundle = activity.getIntent().getExtras();
+        if (bundle != null) {
+            answerList = bundle.getIntegerArrayList(StringConstants.ANSWER_LIST);
+            randomList = bundle.getIntegerArrayList(StringConstants.RANDOM_LIST);
+        }
+
+        assert randomList != null;
+        Questionnaire questionnaire = getItem(randomList.get(position));
 
         holder.questionTv.setText(questionnaire.getQuestion());
         holder.option1Rb.setText(questionnaire.getOptions().getOption1());
         holder.option2Rb.setText(questionnaire.getOptions().getOption2());
         holder.option3Rb.setText(questionnaire.getOptions().getOption3());
-//        ((RadioButton) holder.answerRg.getChildAt(Integer.parseInt(questionnaire.getAnswerIndex()))).setChecked(true);
-
-
-        Bundle bundle = activity.getIntent().getExtras();
-        if (bundle != null) {
-            answerList = bundle.getIntegerArrayList(StringConstants.ANSWER_LIST);
-        }
 
         if (answerList != null) {
-            if (answerList.get(i) != -1) {
-                ((RadioButton) holder.answerRg.getChildAt(answerList.get(i))).setChecked(true);
+            if (answerList.get(position) != -1) {
+                ((RadioButton) holder.answerRg.getChildAt(answerList.get(position))).setChecked(true);
             }
-            if (answerList.get(i) == Integer.parseInt(questionnaire.getAnswerIndex())) {
+            if (answerList.get(position) == Integer.parseInt(questionnaire.getAnswerIndex())) {
                 holder.questionnaireLL.setBackground(activity.getDrawable(R.drawable.border_green));
                 holder.questionTv.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_check_circle_green_24dp, 0);
             } else {
@@ -68,11 +66,6 @@ public class EvaluationRecyclerAdapter extends RecyclerView.Adapter<EvaluationRe
             }
         }
 
-    }
-
-    @Override
-    public int getItemCount() {
-        return questionnaireList.size();
     }
 
     class EvaluationRecyclerAdapterVH extends RecyclerView.ViewHolder {

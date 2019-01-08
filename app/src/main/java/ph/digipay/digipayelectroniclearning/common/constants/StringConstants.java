@@ -14,4 +14,5 @@ public class StringConstants {
     public static final String PDF_LIST_DB = "pdf_list";
     public static final String VIDEO_LIST_DB = "video_list";
     public static final String MODULE_UID = "module_uid";
+    public static final String RANDOM_LIST = "random_list";
 }

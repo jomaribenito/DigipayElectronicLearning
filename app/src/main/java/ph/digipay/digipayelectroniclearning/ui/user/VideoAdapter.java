@@ -33,6 +33,7 @@ public class VideoAdapter extends BaseRecyclerAdapter<VideoForm, IconTextVH> {
     public void onBindViewHolder(@NonNull IconTextVH holder, int i) {
         VideoForm videoForm = getItem(i);
 
+        holder.icon.setImageResource(R.drawable.ic_video_24dp);
         holder.title.setText(videoForm.getName());
         holder.description.setText(videoForm.getDescription());
         holder.itemContainer.setOnClickListener(v -> {

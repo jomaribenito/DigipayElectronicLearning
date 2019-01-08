@@ -2,27 +2,18 @@ package ph.digipay.digipayelectroniclearning.ui.user;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import java.util.List;
 
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
 import ph.digipay.digipayelectroniclearning.common.constants.SharedPrefManager;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
-import ph.digipay.digipayelectroniclearning.common.utils.EndlessRecyclerLinearLayoutManager;
 import ph.digipay.digipayelectroniclearning.common.utils.FragmentUtils;
-import ph.digipay.digipayelectroniclearning.models.IconText;
-import ph.digipay.digipayelectroniclearning.models.Module;
 import ph.digipay.digipayelectroniclearning.models.User;
 import ph.digipay.digipayelectroniclearning.ui.LandingPageActivity;
-import ph.digipay.digipayelectroniclearning.ui.admin.module.ModuleActivity;
-import ph.digipay.digipayelectroniclearning.ui.admin.module.ModuleRecyclerAdapter;
-import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
 
-public class MainActivity extends BaseActivity implements MainContract{
+public class MainActivity extends BaseActivity implements MainContract {
 
     private SharedPrefManager sharedPrefManager;
     private static final int ID_FRAGMENT_CONTAINER = R.id.main_activity_fragment_container;
@@ -87,6 +78,6 @@ public class MainActivity extends BaseActivity implements MainContract{
 
     @Override
     public void showQuestionnaire(String moduleUid) {
-        startActivity(new Intent(this, QuestionnaireListActivity.class));
+        startActivity(new Intent(this, QuestionnaireActivity.class).putExtra(StringConstants.MODULE_UID, moduleUid));
     }
 }

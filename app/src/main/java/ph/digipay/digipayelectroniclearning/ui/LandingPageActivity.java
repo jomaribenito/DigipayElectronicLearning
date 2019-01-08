@@ -2,12 +2,13 @@ package ph.digipay.digipayelectroniclearning.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
 import ph.digipay.digipayelectroniclearning.common.constants.SharedPrefManager;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
+import ph.digipay.digipayelectroniclearning.ui.account.LoginActivity;
+import ph.digipay.digipayelectroniclearning.ui.account.RegisterActivity;
 import ph.digipay.digipayelectroniclearning.ui.admin.AdminMainActivity;
 import ph.digipay.digipayelectroniclearning.ui.user.MainActivity;
 

@@ -17,13 +17,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.user.MainActivity" />
-        <activity android:name=".ui.QuestionnaireActivity" />
-        <activity android:name=".ui.EvaluationActivity" />
+        <activity android:name=".ui.user.QuestionnaireActivity" />
+        <activity android:name=".ui.user.EvaluationActivity" />
         <activity android:name=".ui.common.VideoPlayerActivity" />
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.account.LoginActivity"
             android:label="@string/title_activity_login" />
-        <activity android:name=".ui.RegisterActivity" />
+        <activity android:name=".ui.account.RegisterActivity" />
         <activity
             android:name=".ui.LandingPageActivity"
             android:theme="@style/splashScreenTheme">
@@ -48,7 +48,6 @@
         <activity android:name=".ui.admin.pdf.PDFFormActivity" />
         <activity android:name=".ui.admin.video.VideoManagementActivity" />
         <activity android:name=".ui.admin.video.VideoFormActivity" />
-        <activity android:name=".ui.user.QuestionnaireListActivity"></activity>
     </application>
 
 </manifest>
