@@ -10,6 +10,7 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Optional;
 
 import java.util.List;
+import java.util.Objects;
 
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
@@ -66,5 +67,12 @@ public class ModuleActivity extends BaseActivity implements Validator.Validation
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
         displayErrors(errors);
+    }
+
+    @Override
+    public void setUpToolbar() {
+        super.setUpToolbar();
+        Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

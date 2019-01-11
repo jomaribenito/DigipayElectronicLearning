@@ -4,44 +4,31 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ExpandableListView;
+
+import java.util.Objects;
 
 import ph.digipay.digipayelectroniclearning.R;
+import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
 import ph.digipay.digipayelectroniclearning.common.constants.SharedPrefManager;
-import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
-import ph.digipay.digipayelectroniclearning.models.Module;
-import ph.digipay.digipayelectroniclearning.models.PDFForm;
-import ph.digipay.digipayelectroniclearning.models.Questionnaire;
-import ph.digipay.digipayelectroniclearning.models.VideoForm;
+import ph.digipay.digipayelectroniclearning.common.utils.FragmentUtils;
 import ph.digipay.digipayelectroniclearning.ui.LandingPageActivity;
-import ph.digipay.digipayelectroniclearning.ui.common.PDFBrowserActivity;
-import ph.digipay.digipayelectroniclearning.ui.common.VideoPlayerActivity;
 import ph.digipay.digipayelectroniclearning.ui.admin.module.ModuleActivity;
-import ph.digipay.digipayelectroniclearning.ui.admin.pdf.PDFManagementActivity;
-import ph.digipay.digipayelectroniclearning.ui.admin.questionnaire.QuestionnaireManagementActivity;
-import ph.digipay.digipayelectroniclearning.ui.admin.video.VideoManagementActivity;
-import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
+import ph.digipay.digipayelectroniclearning.ui.admin.pdf.PDFManagementFragment;
+import ph.digipay.digipayelectroniclearning.ui.admin.questionnaire.QuestionnaireManagementFragment;
+import ph.digipay.digipayelectroniclearning.ui.admin.video.VideoManagementFragment;
 
-public class AdminMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class AdminMainActivity extends BaseActivity
+        implements NavigationView.OnNavigationItemSelectedListener, AdminMainContract {
 
     private SharedPrefManager sharedPrefManager;
-    private ExpandableListView expandableListView;
-
-    private FirebaseDatabaseHelper<Module> moduleFirebaseDatabase;
-    private FirebaseDatabaseHelper<PDFForm> pdfFormFirebaseDatabase;
-    private FirebaseDatabaseHelper<VideoForm> videoFormFirebaseDatabase;
-    private FirebaseDatabaseHelper<Questionnaire> questionnaireFirebaseDatabase;
-
-    private MainExpandableAdapter mainExpandableAdapter;
+    private final int ID_FRAGMENT_CONTAINER = R.id.content_main_fragment_container;
 
     @SuppressLint("CheckResult")
     @Override
@@ -53,8 +40,6 @@ public class AdminMainActivity extends AppCompatActivity
 
         sharedPrefManager = new SharedPrefManager(this);
 
-        expandableListView = findViewById(R.id.admin_main_elv);
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -64,27 +49,7 @@ public class AdminMainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        moduleFirebaseDatabase = new FirebaseDatabaseHelper<>(Module.class);
-        pdfFormFirebaseDatabase = new FirebaseDatabaseHelper<>(PDFForm.class);
-        videoFormFirebaseDatabase = new FirebaseDatabaseHelper<>(VideoForm.class);
-        questionnaireFirebaseDatabase = new FirebaseDatabaseHelper<>(Questionnaire.class);
-
-        mainExpandableAdapter = new MainExpandableAdapter(this);
-        moduleFirebaseDatabase.fetchItems(StringConstants.MODULE_DB, newValue -> mainExpandableAdapter.setModuleList(newValue));
-        pdfFormFirebaseDatabase.fetchItems(StringConstants.PDF_LIST_DB, newValue -> mainExpandableAdapter.setPdfFormList(newValue));
-        videoFormFirebaseDatabase.fetchItems(StringConstants.VIDEO_LIST_DB, newValue -> mainExpandableAdapter.setVideoFormList(newValue));
-        questionnaireFirebaseDatabase.fetchItems(StringConstants.QUESTIONNAIRE_DB, newValue -> mainExpandableAdapter.setQuestionnaireList(newValue));
-
-        expandableListView.setAdapter(mainExpandableAdapter);
-
-        mainExpandableAdapter.getPdfFormPublishSubject().subscribe(pdfForm -> startActivity(new Intent(this, PDFBrowserActivity.class).putExtra(StringConstants.PDF_URL, pdfForm.getPdfLink())));
-
-        mainExpandableAdapter.getVideoFormPublishSubject().subscribe(videoForm -> startActivity(new Intent(this, VideoPlayerActivity.class).putExtra(StringConstants.VIDEO_URL, videoForm.getVideoLink())));
-
-        mainExpandableAdapter.getQuestionnairePublishSubject().subscribe(questionnaire -> {
-            Log.e("TAG", questionnaire.getQuestion());
-        });
-
+        showMain();
     }
 
     @Override
@@ -113,7 +78,7 @@ public class AdminMainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_module_settings) {
-            startActivity(new Intent(getApplicationContext(), ModuleActivity.class));
+            showModuleManagement();
             return true;
         }
 
@@ -125,16 +90,20 @@ public class AdminMainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Fragment f = getSupportFragmentManager().findFragmentById(ID_FRAGMENT_CONTAINER);
 
         switch (id) {
             case R.id.nav_pdf:
-                startActivity(new Intent(getApplicationContext(), PDFManagementActivity.class));
+                if(!(f instanceof PDFManagementFragment))
+                    showPdfManagement();
                 break;
             case R.id.nav_video:
-                startActivity(new Intent(getApplicationContext(), VideoManagementActivity.class));
+                if(!(f instanceof VideoManagementFragment))
+                    showVideoManagement();
                 break;
             case R.id.nav_questionnaire:
-                startActivity(new Intent(getApplicationContext(), QuestionnaireManagementActivity.class));
+                if(!(f instanceof QuestionnaireManagementFragment))
+                    showQuestionnaireManagement();
                 break;
             case R.id.nav_logout:
                 sharedPrefManager.setLogin(false);
@@ -146,7 +115,41 @@ public class AdminMainActivity extends AppCompatActivity
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return true;
+        return false;
     }
 
+    @Override
+    public void showMain() {
+        AdminMainFragment adminMainFragment = AdminMainFragment.newInstance();
+        FragmentUtils.addFragment(this, ID_FRAGMENT_CONTAINER, adminMainFragment);
+    }
+
+    @Override
+    public void showModuleManagement() {
+        startActivity(new Intent(getApplicationContext(), ModuleActivity.class));
+    }
+
+    @Override
+    public void showPdfManagement() {
+        PDFManagementFragment pdfManagementFragment = PDFManagementFragment.newInstance();
+        FragmentUtils.replaceFragmentAddToBackStack(this, ID_FRAGMENT_CONTAINER, pdfManagementFragment);
+    }
+
+    @Override
+    public void showVideoManagement() {
+        VideoManagementFragment videoManagementFragment = VideoManagementFragment.newInstance();
+        FragmentUtils.replaceFragmentAddToBackStack(this, ID_FRAGMENT_CONTAINER, videoManagementFragment);
+    }
+
+    @Override
+    public void showQuestionnaireManagement() {
+        QuestionnaireManagementFragment questionnaireManagementFragment = QuestionnaireManagementFragment.newInstance();
+        FragmentUtils.replaceFragmentAddToBackStack(this, ID_FRAGMENT_CONTAINER, questionnaireManagementFragment);
+    }
+
+    @Override
+    public void setUpToolbar() {
+        super.setUpToolbar();
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.app_name);
+    }
 }

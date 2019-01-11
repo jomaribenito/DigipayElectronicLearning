@@ -17,6 +17,7 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
@@ -155,6 +156,14 @@ public class QuestionnaireFormActivity extends BaseActivity implements Validator
             }
         }
         return moduleUid;
+    }
+
+    @Override
+    public void setUpToolbar() {
+        super.setUpToolbar();
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.app_name);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 }

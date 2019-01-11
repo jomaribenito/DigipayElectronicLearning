@@ -34,19 +34,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.admin.questionnaire.QuestionnaireFormActivity" />
-        <activity
-            android:name=".ui.admin.questionnaire.QuestionnaireManagementActivity"
-            android:label="@string/title_activity_questionnaire_management"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.common.PDFBrowserActivity" />
         <activity android:name=".ui.admin.module.ModuleActivity" />
         <activity
             android:name=".ui.admin.AdminMainActivity"
             android:label="@string/title_activity_admin_main"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.admin.pdf.PDFManagementActivity" />
         <activity android:name=".ui.admin.pdf.PDFFormActivity" />
-        <activity android:name=".ui.admin.video.VideoManagementActivity" />
         <activity android:name=".ui.admin.video.VideoFormActivity" />
     </application>
 

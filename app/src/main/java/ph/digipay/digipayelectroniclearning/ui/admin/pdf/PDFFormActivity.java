@@ -13,6 +13,7 @@ import com.mobsandgeeks.saripaar.annotation.Url;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ph.digipay.digipayelectroniclearning.BuildConfig;
 import ph.digipay.digipayelectroniclearning.R;
@@ -105,5 +106,13 @@ public class PDFFormActivity extends BaseActivity implements Validator.Validatio
             }
         }
         return moduleUid;
+    }
+
+    @Override
+    public void setUpToolbar() {
+        super.setUpToolbar();
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.app_name);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }
