@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,7 @@ import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.common.utils.EndlessRecyclerLinearLayoutManager;
 import ph.digipay.digipayelectroniclearning.models.PDFForm;
 import ph.digipay.digipayelectroniclearning.ui.common.PDFBrowserActivity;
-import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
+import ph.digipay.digipayelectroniclearning.persistence.firebase_db.FirebaseDatabaseHelper;
 
 public class PDFListFragment extends BaseFragment {
 

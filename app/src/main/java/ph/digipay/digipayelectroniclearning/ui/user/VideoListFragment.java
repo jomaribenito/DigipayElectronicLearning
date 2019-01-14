@@ -21,7 +21,7 @@ import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.common.utils.EndlessRecyclerLinearLayoutManager;
 import ph.digipay.digipayelectroniclearning.models.VideoForm;
 import ph.digipay.digipayelectroniclearning.ui.common.VideoPlayerActivity;
-import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
+import ph.digipay.digipayelectroniclearning.persistence.firebase_db.FirebaseDatabaseHelper;
 
 
 public class VideoListFragment extends BaseFragment {

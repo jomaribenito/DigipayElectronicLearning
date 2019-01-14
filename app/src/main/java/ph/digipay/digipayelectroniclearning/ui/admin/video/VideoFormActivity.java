@@ -22,7 +22,7 @@ import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.common.utils.FormUtils;
 import ph.digipay.digipayelectroniclearning.models.Module;
 import ph.digipay.digipayelectroniclearning.models.VideoForm;
-import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
+import ph.digipay.digipayelectroniclearning.persistence.firebase_db.FirebaseDatabaseHelper;
 
 public class VideoFormActivity extends BaseActivity implements Validator.ValidationListener {
 

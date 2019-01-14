@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -18,12 +17,6 @@ import android.widget.RadioGroup;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,7 +28,7 @@ import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.models.Questionnaire;
-import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
+import ph.digipay.digipayelectroniclearning.persistence.firebase_db.FirebaseDatabaseHelper;
 
 public class QuestionnaireActivity extends BaseActivity {
 
