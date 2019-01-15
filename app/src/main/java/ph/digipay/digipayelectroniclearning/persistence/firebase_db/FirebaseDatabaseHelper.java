@@ -22,6 +22,11 @@ public class FirebaseDatabaseHelper<T> {
 
     private final Class<T> activityClass;
 
+    /*public FirebaseDatabaseHelper(FirebaseDatabase firebaseDatabase, Class<T> activityClass) {
+        this.firebaseDatabase = firebaseDatabase;
+        this.activityClass = activityClass;
+    }*/
+
     public FirebaseDatabaseHelper(Class<T> activityClass) {
         firebaseDatabase = FirebaseDatabase.getInstance();
         this.activityClass = activityClass;

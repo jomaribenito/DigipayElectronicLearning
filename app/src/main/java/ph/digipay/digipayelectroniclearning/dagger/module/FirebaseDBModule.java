@@ -1,37 +1,38 @@
 package ph.digipay.digipayelectroniclearning.dagger.module;
 
-import javax.inject.Singleton;
+import com.google.firebase.database.FirebaseDatabase;
 
 import dagger.Provides;
 import ph.digipay.digipayelectroniclearning.models.Module;
 import ph.digipay.digipayelectroniclearning.models.PDFForm;
 import ph.digipay.digipayelectroniclearning.models.Questionnaire;
 import ph.digipay.digipayelectroniclearning.models.VideoForm;
-import ph.digipay.digipayelectroniclearning.persistence.firebase_db.database.ModuleFBDatabase;
-import ph.digipay.digipayelectroniclearning.persistence.firebase_db.database.PDFFormFBDatabase;
-import ph.digipay.digipayelectroniclearning.persistence.firebase_db.database.QuestionnaireFBDatabase;
-import ph.digipay.digipayelectroniclearning.persistence.firebase_db.database.VideoFormFBDatabase;
 
 @dagger.Module
 public class FirebaseDBModule {
 
     @Provides
-    public ModuleFBDatabase provideModuleFBDatabase(Class<Module> moduleClass) {
-        return new ModuleFBDatabase(moduleClass);
+    FirebaseDatabase provideFirebaseDatabase() {
+        return FirebaseDatabase.getInstance();
     }
 
     @Provides
-    public QuestionnaireFBDatabase provideQuestionnaireFBDatabase(Class<Questionnaire> questionnaireClass){
-        return new QuestionnaireFBDatabase(questionnaireClass);
+    Class<Module> provideModule() {
+        return Module.class;
     }
 
     @Provides
-    public PDFFormFBDatabase providePdfFormFBDatabase(Class<PDFForm> pdfFormClass){
-        return new PDFFormFBDatabase(pdfFormClass);
+    Class<Questionnaire> provideQuestionnaire() {
+        return Questionnaire.class;
     }
 
     @Provides
-    public VideoFormFBDatabase provideVideoFormFBDatabase(Class<VideoForm> videoFormClass){
-        return new VideoFormFBDatabase(videoFormClass);
+    Class<PDFForm> providePdfForm() {
+        return PDFForm.class;
+    }
+
+    @Provides
+    Class<VideoForm> provideVideoForm() {
+        return VideoForm.class;
     }
 }
