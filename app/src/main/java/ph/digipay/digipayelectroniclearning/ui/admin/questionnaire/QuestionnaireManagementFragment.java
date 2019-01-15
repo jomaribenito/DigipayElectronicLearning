@@ -22,7 +22,6 @@ import ph.digipay.digipayelectroniclearning.common.utils.EndlessRecyclerLinearLa
 import ph.digipay.digipayelectroniclearning.common.utils.SwipeHelper;
 import ph.digipay.digipayelectroniclearning.models.Options;
 import ph.digipay.digipayelectroniclearning.models.Questionnaire;
-import ph.digipay.digipayelectroniclearning.persistence.firebase_db.FirebaseDatabaseHelper;
 
 public class QuestionnaireManagementFragment extends BaseFragment {
 
@@ -31,7 +30,6 @@ public class QuestionnaireManagementFragment extends BaseFragment {
 
     private QuestionnaireRecyclerAdapter questionnaireRecyclerAdapter;
 
-    private FirebaseDatabaseHelper<Questionnaire> questionnaireFirebaseDatabase;
     private List<Questionnaire> questionnaireList;
 
     public QuestionnaireManagementFragment() {
@@ -47,14 +45,14 @@ public class QuestionnaireManagementFragment extends BaseFragment {
 
     @Override
     public void initialize() {
-        questionnaireFirebaseDatabase = new FirebaseDatabaseHelper<>(Questionnaire.class);
 
-        questionnaireFirebaseDatabase.fetchItems(StringConstants.QUESTIONNAIRE_DB, itemList -> {
-            questionnaireList = itemList;
-            questionnaireRecyclerAdapter = new QuestionnaireRecyclerAdapter(questionnaireList);
-            questionnaireRv.setLayoutManager(new EndlessRecyclerLinearLayoutManager(getBaseActivity().getBaseContext()));
-            questionnaireRv.setAdapter(questionnaireRecyclerAdapter);
-        });
+        getBaseActivity().getDigipayELearningApplication().getAppComponent().getQuestionnaireFbDatabase()
+                .fetchItems(StringConstants.QUESTIONNAIRE_DB, itemList -> {
+                    questionnaireList = itemList;
+                    questionnaireRecyclerAdapter = new QuestionnaireRecyclerAdapter(questionnaireList);
+                    questionnaireRv.setLayoutManager(new EndlessRecyclerLinearLayoutManager(getBaseActivity().getBaseContext()));
+                    questionnaireRv.setAdapter(questionnaireRecyclerAdapter);
+                });
 
 
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getBaseActivity().getBaseContext());
@@ -73,7 +71,8 @@ public class QuestionnaireManagementFragment extends BaseFragment {
                                     .setCancelable(false)
                                     .setPositiveButton("Delete", (dialog, which) -> {
 //                                        removeQuestionnaireItem(questionnaire.getUid());
-                                        questionnaireFirebaseDatabase.removeItem(StringConstants.QUESTIONNAIRE_DB, questionnaire.getUid());
+                                        getBaseActivity().getDigipayELearningApplication().getAppComponent().getQuestionnaireFbDatabase()
+                                                .removeItem(StringConstants.QUESTIONNAIRE_DB, questionnaire.getUid());
                                         questionnaireRecyclerAdapter.clear();
                                     })
                                     .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())

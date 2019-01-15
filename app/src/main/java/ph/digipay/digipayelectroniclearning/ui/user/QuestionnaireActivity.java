@@ -80,22 +80,20 @@ public class QuestionnaireActivity extends BaseActivity {
             moduleUid = bndl.getString(StringConstants.MODULE_UID);
         }
 
-        FirebaseDatabaseHelper<Questionnaire> questionnaireFirebaseDatabase =
-                new FirebaseDatabaseHelper<>(Questionnaire.class);
-        questionnaireFirebaseDatabase.fetchItems(StringConstants.QUESTIONNAIRE_DB, itemList -> {
-            questionnaireList = new ArrayList<>();
-            for (Questionnaire questionnaire: itemList){
-                if (questionnaire.getModuleUid().equals(moduleUid)){
-                    questionnaireList.add(questionnaire);
-                }
-            }
-            hideProgressDialog();
-            randomList = getRandomList(questionnaireList.size());
-            loadData(randomList.get(ctr));
-            ctr++;
-            countDownTimer.start();
-        });
-
+        getDigipayELearningApplication().getAppComponent().getQuestionnaireFbDatabase()
+                .fetchItems(StringConstants.QUESTIONNAIRE_DB, itemList -> {
+                    questionnaireList = new ArrayList<>();
+                    for (Questionnaire questionnaire : itemList) {
+                        if (questionnaire.getModuleUid().equals(moduleUid)) {
+                            questionnaireList.add(questionnaire);
+                        }
+                    }
+                    hideProgressDialog();
+                    randomList = getRandomList(questionnaireList.size());
+                    loadData(randomList.get(ctr));
+                    ctr++;
+                    countDownTimer.start();
+                });
 
 
         answerList = new ArrayList<>();
@@ -174,7 +172,7 @@ public class QuestionnaireActivity extends BaseActivity {
 
     }
 
-    private void initCountDownTimer(){
+    private void initCountDownTimer() {
         countDownTimer = new CountDownTimer(11000, 1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -195,7 +193,7 @@ public class QuestionnaireActivity extends BaseActivity {
         };
     }
 
-    private void setQuestionTv(){
+    private void setQuestionTv() {
         questionTv.setFactory(() -> {
             TextView textView = new TextView(getApplicationContext());
             textView.setTextColor(Color.BLACK);
@@ -215,7 +213,7 @@ public class QuestionnaireActivity extends BaseActivity {
         questionTv.setOutAnimation(textAnimationOut);
     }
 
-    private void setTimerTv(){
+    private void setTimerTv() {
         timerTv.setFactory(() -> {
             TextView textView = new TextView(getApplicationContext());
             textView.setTextColor(Color.BLACK);
@@ -236,14 +234,14 @@ public class QuestionnaireActivity extends BaseActivity {
         timerTv.setOutAnimation(textAnimationOut);
     }
 
-    private ArrayList<Integer> getRandomList(int size){
+    private ArrayList<Integer> getRandomList(int size) {
         ArrayList<Integer> randomNumberList = new ArrayList<>();
         List<Integer> numberList = new LinkedList<>();
-        for(int i = 0; i <= size - 1; i++) {
+        for (int i = 0; i <= size - 1; i++) {
             numberList.add(i);
         }
         Random rand = new Random();
-        while(numberList.size() > 0) {
+        while (numberList.size() > 0) {
             int index = rand.nextInt(numberList.size());
             randomNumberList.add(numberList.remove(index));
         }

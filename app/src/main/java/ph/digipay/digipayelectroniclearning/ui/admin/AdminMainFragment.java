@@ -15,13 +15,8 @@ import android.widget.ExpandableListView;
 import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseFragment;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
-import ph.digipay.digipayelectroniclearning.models.Module;
-import ph.digipay.digipayelectroniclearning.models.PDFForm;
-import ph.digipay.digipayelectroniclearning.models.Questionnaire;
-import ph.digipay.digipayelectroniclearning.models.VideoForm;
 import ph.digipay.digipayelectroniclearning.ui.common.PDFBrowserActivity;
 import ph.digipay.digipayelectroniclearning.ui.common.VideoPlayerActivity;
-import ph.digipay.digipayelectroniclearning.persistence.firebase_db.FirebaseDatabaseHelper;
 
 public class AdminMainFragment extends BaseFragment {
 
@@ -57,16 +52,15 @@ public class AdminMainFragment extends BaseFragment {
     @Override
     public void initialize() {
 
-        FirebaseDatabaseHelper<Module> moduleFirebaseDatabase = new FirebaseDatabaseHelper<>(Module.class);
-        FirebaseDatabaseHelper<PDFForm> pdfFormFirebaseDatabase = new FirebaseDatabaseHelper<>(PDFForm.class);
-        FirebaseDatabaseHelper<VideoForm> videoFormFirebaseDatabase = new FirebaseDatabaseHelper<>(VideoForm.class);
-        FirebaseDatabaseHelper<Questionnaire> questionnaireFirebaseDatabase = new FirebaseDatabaseHelper<>(Questionnaire.class);
-
         mainExpandableAdapter = new MainExpandableAdapter(getBaseActivity().getBaseContext());
-        moduleFirebaseDatabase.fetchItems(StringConstants.MODULE_DB, newValue -> mainExpandableAdapter.setModuleList(newValue));
-        pdfFormFirebaseDatabase.fetchItems(StringConstants.PDF_LIST_DB, newValue -> mainExpandableAdapter.setPdfFormList(newValue));
-        videoFormFirebaseDatabase.fetchItems(StringConstants.VIDEO_LIST_DB, newValue -> mainExpandableAdapter.setVideoFormList(newValue));
-        questionnaireFirebaseDatabase.fetchItems(StringConstants.QUESTIONNAIRE_DB, newValue -> mainExpandableAdapter.setQuestionnaireList(newValue));
+        getBaseActivity().getDigipayELearningApplication().getAppComponent().getModuleFbDatabase()
+                .fetchItems(StringConstants.MODULE_DB, newValue -> mainExpandableAdapter.setModuleList(newValue));
+        getBaseActivity().getDigipayELearningApplication().getAppComponent().getPdfFormFbDatabase()
+                .fetchItems(StringConstants.PDF_LIST_DB, newValue -> mainExpandableAdapter.setPdfFormList(newValue));
+        getBaseActivity().getDigipayELearningApplication().getAppComponent().getVideoFormFbDatabase()
+                .fetchItems(StringConstants.VIDEO_LIST_DB, newValue -> mainExpandableAdapter.setVideoFormList(newValue));
+        getBaseActivity().getDigipayELearningApplication().getAppComponent().getQuestionnaireFbDatabase()
+                .fetchItems(StringConstants.QUESTIONNAIRE_DB, newValue -> mainExpandableAdapter.setQuestionnaireList(newValue));
 
         expandableListView.setAdapter(mainExpandableAdapter);
 

@@ -36,7 +36,6 @@ public class PDFFormActivity extends BaseActivity implements Validator.Validatio
 
     private Validator validator;
 
-    private FirebaseDatabaseHelper<PDFForm> pdfFormFirebaseDatabase;
     private List<Module> moduleList;
 
     @Override
@@ -52,9 +51,8 @@ public class PDFFormActivity extends BaseActivity implements Validator.Validatio
         validator = new Validator(this);
         validator.setValidationListener(this);
 
-        pdfFormFirebaseDatabase = new FirebaseDatabaseHelper<>(PDFForm.class);
 
-        if (BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             pdfUrlTiet.setText("https://s3-ap-southeast-1.amazonaws.com/digipay-core-bucket/production/docs/FSG+Data+Privacy+Statement_July+2018.pdf");
         }
 
@@ -94,11 +92,12 @@ public class PDFFormActivity extends BaseActivity implements Validator.Validatio
         pdfForm.setPdfLink(pdfUrl);
         pdfForm.setName(pdfName);
         pdfForm.setDescription(pdfDescription);
-        pdfFormFirebaseDatabase.insertItems(StringConstants.PDF_LIST_DB, pdfForm);
+        getDigipayELearningApplication().getAppComponent().getPdfFormFbDatabase()
+                .insertItems(StringConstants.PDF_LIST_DB, pdfForm);
         finish();
     }
 
-    private String getModuleUid(String moduleName){
+    private String getModuleUid(String moduleName) {
         String moduleUid = null;
         for (Module module : moduleList) {
             if (module.getName().equals(moduleName)) {

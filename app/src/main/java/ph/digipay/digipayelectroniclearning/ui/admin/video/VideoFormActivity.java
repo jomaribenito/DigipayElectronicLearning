@@ -36,7 +36,6 @@ public class VideoFormActivity extends BaseActivity implements Validator.Validat
 
     private Validator validator;
 
-    private FirebaseDatabaseHelper<VideoForm> videoFormFirebaseDatabase;
 
     private List<Module> moduleList;
 
@@ -45,7 +44,6 @@ public class VideoFormActivity extends BaseActivity implements Validator.Validat
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_form);
 
-        videoFormFirebaseDatabase = new FirebaseDatabaseHelper<>(VideoForm.class);
 
         moduleSpnr = findViewById(R.id.module_spnr);
         videoUrlTiet = findViewById(R.id.video_url_tiet);
@@ -96,7 +94,8 @@ public class VideoFormActivity extends BaseActivity implements Validator.Validat
         videoForm.setVideoLink(videoUrl);
         videoForm.setName(videoName);
         videoForm.setDescription(videoDescription);
-        videoFormFirebaseDatabase.insertItems(StringConstants.VIDEO_LIST_DB, videoForm);
+        getDigipayELearningApplication().getAppComponent().getVideoFormFbDatabase()
+                .insertItems(StringConstants.VIDEO_LIST_DB, videoForm);
     }
 
     private String getModuleUid(String moduleName){

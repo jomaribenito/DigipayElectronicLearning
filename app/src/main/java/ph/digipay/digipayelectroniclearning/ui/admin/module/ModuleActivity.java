@@ -18,7 +18,6 @@ import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.common.utils.EndlessRecyclerLinearLayoutManager;
 import ph.digipay.digipayelectroniclearning.common.utils.FormUtils;
 import ph.digipay.digipayelectroniclearning.models.Module;
-import ph.digipay.digipayelectroniclearning.persistence.firebase_db.FirebaseDatabaseHelper;
 
 public class ModuleActivity extends BaseActivity implements Validator.ValidationListener {
 
@@ -27,8 +26,6 @@ public class ModuleActivity extends BaseActivity implements Validator.Validation
     protected TextInputEditText moduleName;
     @Optional
     protected TextInputEditText moduleDescription;
-
-    private FirebaseDatabaseHelper<Module> modulesFirebaseDatabase;
 
     private Validator validator;
 
@@ -43,12 +40,12 @@ public class ModuleActivity extends BaseActivity implements Validator.Validation
         moduleDescription = findViewById(R.id.module_description);
         moduleRv = findViewById(R.id.modules_rv);
 
-        modulesFirebaseDatabase = new FirebaseDatabaseHelper<>(Module.class);
-        modulesFirebaseDatabase.fetchItems(StringConstants.MODULE_DB, itemList -> {
-            moduleRecyclerAdapter = new ModuleRecyclerAdapter(itemList);
-            moduleRv.setLayoutManager(new EndlessRecyclerLinearLayoutManager(this));
-            moduleRv.setAdapter(moduleRecyclerAdapter);
-        });
+        getDigipayELearningApplication().getAppComponent().getModuleFbDatabase()
+                .fetchItems(StringConstants.MODULE_DB, itemList -> {
+                    moduleRecyclerAdapter = new ModuleRecyclerAdapter(itemList);
+                    moduleRv.setLayoutManager(new EndlessRecyclerLinearLayoutManager(this));
+                    moduleRv.setAdapter(moduleRecyclerAdapter);
+                });
 
 
         validator = new Validator(this);
@@ -60,7 +57,8 @@ public class ModuleActivity extends BaseActivity implements Validator.Validation
     @Override
     public void onValidationSucceeded() {
         Module modules = new Module(FormUtils.getTrimmedString(moduleName), FormUtils.getTrimmedString(moduleDescription));
-        modulesFirebaseDatabase.insertItems(StringConstants.MODULE_DB, modules);
+        getDigipayELearningApplication().getAppComponent().getModuleFbDatabase()
+                .insertItems(StringConstants.MODULE_DB, modules);
         moduleRecyclerAdapter.clear();
     }
 

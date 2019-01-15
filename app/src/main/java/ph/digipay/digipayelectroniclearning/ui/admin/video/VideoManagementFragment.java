@@ -46,7 +46,10 @@ public class VideoManagementFragment extends BaseFragment {
 
     @Override
     public void initialize() {
-        videoFormFirebaseDatabase = new FirebaseDatabaseHelper<>( VideoForm.class);
+        videoFormFirebaseDatabase = getBaseActivity()
+                .getDigipayELearningApplication()
+                .getAppComponent()
+                .getVideoFormFbDatabase();
 
         videoFormFirebaseDatabase.fetchItems(StringConstants.VIDEO_LIST_DB, itemList -> {
             videoListRecyclerAdapter = new VideoListRecyclerAdapter(itemList);

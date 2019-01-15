@@ -21,7 +21,6 @@ import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.common.utils.EndlessRecyclerLinearLayoutManager;
 import ph.digipay.digipayelectroniclearning.models.VideoForm;
 import ph.digipay.digipayelectroniclearning.ui.common.VideoPlayerActivity;
-import ph.digipay.digipayelectroniclearning.persistence.firebase_db.FirebaseDatabaseHelper;
 
 
 public class VideoListFragment extends BaseFragment {
@@ -45,7 +44,7 @@ public class VideoListFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null){
+        if (getArguments() != null) {
             moduleUid = getArguments().getString(StringConstants.MODULE_UID);
         }
     }
@@ -68,17 +67,17 @@ public class VideoListFragment extends BaseFragment {
     public void initialize() {
         VideoAdapter videoAdapter = new VideoAdapter();
 
-        FirebaseDatabaseHelper<VideoForm> videoFormFirebaseDatabase = new FirebaseDatabaseHelper<>(VideoForm.class);
-        videoFormFirebaseDatabase.fetchItems(StringConstants.VIDEO_LIST_DB, itemList -> {
-            videoAdapter.clear();
-            List<VideoForm> videoFormList = new ArrayList<>();
-            for (VideoForm videoForm : itemList){
-                if (videoForm.getModuleUid().equals(moduleUid)){
-                    videoFormList.add(videoForm);
-                }
-            }
-            videoAdapter.setItems(videoFormList);
-        });
+        getBaseActivity().getDigipayELearningApplication().getAppComponent().getVideoFormFbDatabase()
+                .fetchItems(StringConstants.VIDEO_LIST_DB, itemList -> {
+                    videoAdapter.clear();
+                    List<VideoForm> videoFormList = new ArrayList<>();
+                    for (VideoForm videoForm : itemList) {
+                        if (videoForm.getModuleUid().equals(moduleUid)) {
+                            videoFormList.add(videoForm);
+                        }
+                    }
+                    videoAdapter.setItems(videoFormList);
+                });
 
         videoAdapter.getPublishSubject().subscribe(videoForm -> {
             startActivity(new Intent(getBaseActivity().getBaseContext(), VideoPlayerActivity.class).putExtra(StringConstants.VIDEO_URL, videoForm.getVideoLink()));

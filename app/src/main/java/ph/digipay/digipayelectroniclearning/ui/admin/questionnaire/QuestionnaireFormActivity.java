@@ -47,7 +47,6 @@ public class QuestionnaireFormActivity extends BaseActivity implements Validator
     private String uid = null;
     private boolean isAdding;
 
-    private FirebaseDatabaseHelper<Questionnaire> questionnaireFirebaseDatabase;
     private List<Module> moduleList;
 
 
@@ -64,18 +63,18 @@ public class QuestionnaireFormActivity extends BaseActivity implements Validator
         moduleSpnr = findViewById(R.id.module_spnr);
         Button actionBtn = findViewById(R.id.action_btn);
 
-        questionnaireFirebaseDatabase = new FirebaseDatabaseHelper<>(Questionnaire.class);
-        FirebaseDatabaseHelper<Module> moduleFirebaseDatabase = new FirebaseDatabaseHelper<>(Module.class);
-        moduleFirebaseDatabase.fetchItems(StringConstants.MODULE_DB, itemList -> {
-            moduleList = itemList;
-            List<String> moduleNameList = new ArrayList<>();
-            for (Module module : itemList) {
-                moduleNameList.add(module.getName());
-            }
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_spinner_dropdown_item, moduleNameList);
-            moduleSpnr.setAdapter(arrayAdapter);
-        });
+
+        getDigipayELearningApplication().getAppComponent().getModuleFbDatabase()
+                .fetchItems(StringConstants.MODULE_DB, itemList -> {
+                    moduleList = itemList;
+                    List<String> moduleNameList = new ArrayList<>();
+                    for (Module module : itemList) {
+                        moduleNameList.add(module.getName());
+                    }
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
+                            android.R.layout.simple_spinner_dropdown_item, moduleNameList);
+                    moduleSpnr.setAdapter(arrayAdapter);
+                });
 
 
         Intent intent = getIntent();
@@ -133,12 +132,14 @@ public class QuestionnaireFormActivity extends BaseActivity implements Validator
         questionnaire.setQuestion(question);
         questionnaire.setOptions(new Options(options[0], options[1], options[2]));
         questionnaire.setAnswerIndex(answerIndex);
-        questionnaireFirebaseDatabase.insertItems(StringConstants.QUESTIONNAIRE_DB, questionnaire);
+        getDigipayELearningApplication().getAppComponent().getQuestionnaireFbDatabase()
+                .insertItems(StringConstants.QUESTIONNAIRE_DB, questionnaire);
         showToast(getString(R.string.add_questionnaire_success_msg));
         finish();
     }
 
     private void updateQuestionnaireItem(String uid, String question, String[] options, String answerIndex) {
+        FirebaseDatabaseHelper<Questionnaire> questionnaireFirebaseDatabase = getDigipayELearningApplication().getAppComponent().getQuestionnaireFbDatabase();
         questionnaireFirebaseDatabase.updateItem(StringConstants.QUESTIONNAIRE_DB, uid, "question", null, question);
         questionnaireFirebaseDatabase.updateItem(StringConstants.QUESTIONNAIRE_DB, uid, "options", "option1", options[0]);
         questionnaireFirebaseDatabase.updateItem(StringConstants.QUESTIONNAIRE_DB, uid, "options", "option2", options[1]);
@@ -148,7 +149,7 @@ public class QuestionnaireFormActivity extends BaseActivity implements Validator
         finish();
     }
 
-    private String getModuleUid(String moduleName){
+    private String getModuleUid(String moduleName) {
         String moduleUid = null;
         for (Module module : moduleList) {
             if (module.getName().equals(moduleName)) {

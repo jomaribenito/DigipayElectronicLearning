@@ -20,8 +20,8 @@ import ph.digipay.digipayelectroniclearning.common.base.BaseFragment;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.common.utils.EndlessRecyclerLinearLayoutManager;
 import ph.digipay.digipayelectroniclearning.models.PDFForm;
-import ph.digipay.digipayelectroniclearning.ui.common.PDFBrowserActivity;
 import ph.digipay.digipayelectroniclearning.persistence.firebase_db.FirebaseDatabaseHelper;
+import ph.digipay.digipayelectroniclearning.ui.common.PDFBrowserActivity;
 
 public class PDFListFragment extends BaseFragment {
 
@@ -47,20 +47,20 @@ public class PDFListFragment extends BaseFragment {
     public void initialize() {
         PDFAdapter pdfAdapter = new PDFAdapter();
 
-        FirebaseDatabaseHelper<PDFForm> pdfFormFirebaseDatabase = new FirebaseDatabaseHelper<>(PDFForm.class);
-        pdfFormFirebaseDatabase.fetchItems(StringConstants.PDF_LIST_DB, itemList -> {
-            pdfAdapter.clear();
-            List<PDFForm> pdfFormList = new ArrayList<>();
-            for(PDFForm pdfForm: itemList){
-                if (pdfForm.getModuleUid().equals(moduleUid)){
-                    pdfFormList.add(pdfForm);
-                }
-            }
-            pdfAdapter.setItems(pdfFormList);
-        });
+        getBaseActivity().getDigipayELearningApplication().getAppComponent().getPdfFormFbDatabase()
+                .fetchItems(StringConstants.PDF_LIST_DB, itemList -> {
+                    pdfAdapter.clear();
+                    List<PDFForm> pdfFormList = new ArrayList<>();
+                    for (PDFForm pdfForm : itemList) {
+                        if (pdfForm.getModuleUid().equals(moduleUid)) {
+                            pdfFormList.add(pdfForm);
+                        }
+                    }
+                    pdfAdapter.setItems(pdfFormList);
+                });
 
         pdfAdapter.getPublishSubject().subscribe(pdfForm -> {
-           startActivity(new Intent(getBaseActivity().getBaseContext(), PDFBrowserActivity.class).putExtra(StringConstants.PDF_URL, pdfForm.getPdfLink()));
+            startActivity(new Intent(getBaseActivity().getBaseContext(), PDFBrowserActivity.class).putExtra(StringConstants.PDF_URL, pdfForm.getPdfLink()));
         });
 
         pdfListRv.setLayoutManager(new EndlessRecyclerLinearLayoutManager(getBaseActivity().getBaseContext()));
@@ -70,7 +70,7 @@ public class PDFListFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null){
+        if (getArguments() != null) {
             moduleUid = getArguments().getString(StringConstants.MODULE_UID);
         }
     }
