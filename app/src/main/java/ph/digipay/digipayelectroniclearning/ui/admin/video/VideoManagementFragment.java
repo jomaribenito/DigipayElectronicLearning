@@ -21,7 +21,7 @@ import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.common.utils.EndlessRecyclerLinearLayoutManager;
 import ph.digipay.digipayelectroniclearning.common.utils.SwipeHelper;
 import ph.digipay.digipayelectroniclearning.models.VideoForm;
-import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
+import ph.digipay.digipayelectroniclearning.persistence.firebase_db.FirebaseDatabaseHelper;
 
 public class VideoManagementFragment extends BaseFragment {
     
@@ -46,7 +46,10 @@ public class VideoManagementFragment extends BaseFragment {
 
     @Override
     public void initialize() {
-        videoFormFirebaseDatabase = new FirebaseDatabaseHelper<>( VideoForm.class);
+        videoFormFirebaseDatabase = getBaseActivity()
+                .getDigipayELearningApplication()
+                .getAppComponent()
+                .getVideoFormFbDatabase();
 
         videoFormFirebaseDatabase.fetchItems(StringConstants.VIDEO_LIST_DB, itemList -> {
             videoListRecyclerAdapter = new VideoListRecyclerAdapter(itemList);

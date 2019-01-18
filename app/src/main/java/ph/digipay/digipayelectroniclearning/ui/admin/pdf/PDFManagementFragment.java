@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.common.utils.EndlessRecyclerLinearLayoutManager;
 import ph.digipay.digipayelectroniclearning.common.utils.SwipeHelper;
 import ph.digipay.digipayelectroniclearning.models.PDFForm;
-import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
 
 
 public class PDFManagementFragment extends BaseFragment {
@@ -31,7 +29,6 @@ public class PDFManagementFragment extends BaseFragment {
     private FloatingActionButton fab;
     private PDFListRecyclerAdapter pdfListRecyclerAdapter;
 
-    private FirebaseDatabaseHelper<PDFForm> pdfFormFirebaseDatabase;
     private List<PDFForm> pdfFormList;
 
     public PDFManagementFragment() {
@@ -47,14 +44,14 @@ public class PDFManagementFragment extends BaseFragment {
 
     @Override
     public void initialize() {
-        pdfFormFirebaseDatabase = new FirebaseDatabaseHelper<>(PDFForm.class);
 
-        pdfFormFirebaseDatabase.fetchItems(StringConstants.PDF_LIST_DB, itemList -> {
-            pdfFormList = itemList;
-            pdfListRecyclerAdapter = new PDFListRecyclerAdapter(itemList);
-            pdfRv.setLayoutManager(new EndlessRecyclerLinearLayoutManager(getBaseActivity().getBaseContext()));
-            pdfRv.setAdapter(pdfListRecyclerAdapter);
-        });
+        getBaseActivity().getDigipayELearningApplication().getAppComponent().getPdfFormFbDatabase()
+                .fetchItems(StringConstants.PDF_LIST_DB, itemList -> {
+                    pdfFormList = itemList;
+                    pdfListRecyclerAdapter = new PDFListRecyclerAdapter(itemList);
+                    pdfRv.setLayoutManager(new EndlessRecyclerLinearLayoutManager(getBaseActivity().getBaseContext()));
+                    pdfRv.setAdapter(pdfListRecyclerAdapter);
+                });
 
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getBaseActivity().getBaseContext());
         new SwipeHelper(getBaseActivity().getBaseContext(), pdfRv) {
@@ -70,7 +67,8 @@ public class PDFManagementFragment extends BaseFragment {
                                     .setMessage("This pdf will be deleted.")
                                     .setCancelable(false)
                                     .setPositiveButton("Delete", (dialog, which) -> {
-                                        pdfFormFirebaseDatabase.removeItem(StringConstants.PDF_LIST_DB, pdfForm.getUid());
+                                        getBaseActivity().getDigipayELearningApplication().getAppComponent().getPdfFormFbDatabase()
+                                                .removeItem(StringConstants.PDF_LIST_DB, pdfForm.getUid());
                                         pdfListRecyclerAdapter.clear();
                                     })
                                     .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())

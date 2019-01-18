@@ -1,4 +1,4 @@
-package ph.digipay.digipayelectroniclearning.ui.common.firebase_db;
+package ph.digipay.digipayelectroniclearning.persistence.firebase_db;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +21,11 @@ public class FirebaseDatabaseHelper<T> {
     private List<T> items;
 
     private final Class<T> activityClass;
+
+    /*public FirebaseDatabaseHelper(FirebaseDatabase firebaseDatabase, Class<T> activityClass) {
+        this.firebaseDatabase = firebaseDatabase;
+        this.activityClass = activityClass;
+    }*/
 
     public FirebaseDatabaseHelper(Class<T> activityClass) {
         firebaseDatabase = FirebaseDatabase.getInstance();

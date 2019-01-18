@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -18,12 +17,6 @@ import android.widget.RadioGroup;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,7 +28,7 @@ import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseActivity;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.models.Questionnaire;
-import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
+import ph.digipay.digipayelectroniclearning.persistence.firebase_db.FirebaseDatabaseHelper;
 
 public class QuestionnaireActivity extends BaseActivity {
 
@@ -87,22 +80,20 @@ public class QuestionnaireActivity extends BaseActivity {
             moduleUid = bndl.getString(StringConstants.MODULE_UID);
         }
 
-        FirebaseDatabaseHelper<Questionnaire> questionnaireFirebaseDatabase =
-                new FirebaseDatabaseHelper<>(Questionnaire.class);
-        questionnaireFirebaseDatabase.fetchItems(StringConstants.QUESTIONNAIRE_DB, itemList -> {
-            questionnaireList = new ArrayList<>();
-            for (Questionnaire questionnaire: itemList){
-                if (questionnaire.getModuleUid().equals(moduleUid)){
-                    questionnaireList.add(questionnaire);
-                }
-            }
-            hideProgressDialog();
-            randomList = getRandomList(questionnaireList.size());
-            loadData(randomList.get(ctr));
-            ctr++;
-            countDownTimer.start();
-        });
-
+        getDigipayELearningApplication().getAppComponent().getQuestionnaireFbDatabase()
+                .fetchItems(StringConstants.QUESTIONNAIRE_DB, itemList -> {
+                    questionnaireList = new ArrayList<>();
+                    for (Questionnaire questionnaire : itemList) {
+                        if (questionnaire.getModuleUid().equals(moduleUid)) {
+                            questionnaireList.add(questionnaire);
+                        }
+                    }
+                    hideProgressDialog();
+                    randomList = getRandomList(questionnaireList.size());
+                    loadData(randomList.get(ctr));
+                    ctr++;
+                    countDownTimer.start();
+                });
 
 
         answerList = new ArrayList<>();
@@ -181,7 +172,7 @@ public class QuestionnaireActivity extends BaseActivity {
 
     }
 
-    private void initCountDownTimer(){
+    private void initCountDownTimer() {
         countDownTimer = new CountDownTimer(11000, 1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -202,7 +193,7 @@ public class QuestionnaireActivity extends BaseActivity {
         };
     }
 
-    private void setQuestionTv(){
+    private void setQuestionTv() {
         questionTv.setFactory(() -> {
             TextView textView = new TextView(getApplicationContext());
             textView.setTextColor(Color.BLACK);
@@ -222,7 +213,7 @@ public class QuestionnaireActivity extends BaseActivity {
         questionTv.setOutAnimation(textAnimationOut);
     }
 
-    private void setTimerTv(){
+    private void setTimerTv() {
         timerTv.setFactory(() -> {
             TextView textView = new TextView(getApplicationContext());
             textView.setTextColor(Color.BLACK);
@@ -243,14 +234,14 @@ public class QuestionnaireActivity extends BaseActivity {
         timerTv.setOutAnimation(textAnimationOut);
     }
 
-    private ArrayList<Integer> getRandomList(int size){
+    private ArrayList<Integer> getRandomList(int size) {
         ArrayList<Integer> randomNumberList = new ArrayList<>();
         List<Integer> numberList = new LinkedList<>();
-        for(int i = 0; i <= size - 1; i++) {
+        for (int i = 0; i <= size - 1; i++) {
             numberList.add(i);
         }
         Random rand = new Random();
-        while(numberList.size() > 0) {
+        while (numberList.size() > 0) {
             int index = rand.nextInt(numberList.size());
             randomNumberList.add(numberList.remove(index));
         }

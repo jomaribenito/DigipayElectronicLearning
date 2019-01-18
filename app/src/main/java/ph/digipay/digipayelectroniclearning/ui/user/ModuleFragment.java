@@ -16,8 +16,6 @@ import ph.digipay.digipayelectroniclearning.R;
 import ph.digipay.digipayelectroniclearning.common.base.BaseFragment;
 import ph.digipay.digipayelectroniclearning.common.constants.StringConstants;
 import ph.digipay.digipayelectroniclearning.common.utils.EndlessRecyclerLinearLayoutManager;
-import ph.digipay.digipayelectroniclearning.models.Module;
-import ph.digipay.digipayelectroniclearning.ui.common.firebase_db.FirebaseDatabaseHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,11 +56,11 @@ public class ModuleFragment extends BaseFragment {
     public void initialize() {
         ModuleAdapter moduleAdapter = new ModuleAdapter();
 
-        FirebaseDatabaseHelper<Module> moduleFirebaseDatabase = new FirebaseDatabaseHelper<>(Module.class);
-        moduleFirebaseDatabase.fetchItems(StringConstants.MODULE_DB, newItems -> {
-            moduleAdapter.clear();
-            moduleAdapter.setItems(newItems);
-        });
+        getBaseActivity().getDigipayELearningApplication().getAppComponent().getModuleFbDatabase()
+                .fetchItems(StringConstants.MODULE_DB, newItems -> {
+                    moduleAdapter.clear();
+                    moduleAdapter.setItems(newItems);
+                });
 
         moduleAdapter.getPublishSubject().subscribe(module -> {
             mainContract.showContent(module.getUid());
